@@ -31,7 +31,10 @@
             JSON.parse(files).forEach(element => {
                 console.log(element)
                 const nc = document.createElement("div");
-                nc.classList.add("item"); 
+                nc.classList.add("item");
+                nc.addEventListener("click",()=>{
+                    getData(`delete/${element}`)
+                })
                 nc.innerHTML = `
                 <img src="${element}"></img>
                 `

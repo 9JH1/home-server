@@ -57,6 +57,9 @@ def upload_file():
     # Save the file to the uploads directory
     file.save(files_route + '/' + file.filename)
     return 'File uploaded successfully'
-
+@app.route('/delete/<path:file_path>')
+def delete_file(file_path):
+    os.remove(file_path)
+    return "file deleted"
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="8080")
