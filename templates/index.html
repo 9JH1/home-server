@@ -42,8 +42,10 @@
                 nc2.classList.add("close");
                 nc2.innerHTML = "x";
                 nc2.addEventListener("click",()=>{ 
-                    nc.remove()
-                    getData(`delete/${element}`)
+                    if (window.confirm('delete file?')){
+                        nc.remove()
+                        getData(`delete/${element}`)
+                    }
                 })
                 nc.append(nc2)
                 document.getElementsByClassName("content")[0].append(nc); 
