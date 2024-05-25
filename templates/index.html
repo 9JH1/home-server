@@ -37,7 +37,7 @@
                 if(String(element).endsWith(".jpg")){ 
                     nc.innerHTML = `<img src="${element}"></img>`
                 } else if (String(element).endsWith(".mp4")) {
-                    nc.innerHTML = `<video src="${element}"></video>`
+                    nc.innerHTML = `<video controls="controls" src="${element}"></video>`
                       //      
                 }
                 const nc2 = document.createElement("div");

@@ -58,9 +58,10 @@ body {
     height: fit-content;
     position: relative;
 }
-.content .item img { 
+.content .item img video { 
     width:100%;
 }
+
 
 .content .item .close {
     background-color: red;
