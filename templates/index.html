@@ -64,7 +64,6 @@
                 for (var i = 0; i < files.length; i++) {
                     uploadFile(files[i]);
                 }
-                location.reload()
             };
 
             input.click();
@@ -80,6 +79,7 @@
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     console.log(xhr.responseText); // Handle success response
+                    location.reload()
                 } else {
                     console.error(xhr.statusText); // Handle error
                 }
