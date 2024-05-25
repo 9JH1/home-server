@@ -58,7 +58,7 @@ body {
     height: fit-content;
     position: relative;
 }
-.content .item img video { 
+.content .item img, .content .item video { 
     width:100%;
     min-width:100%;
     max-width:100%;
