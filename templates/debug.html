@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="static/styles/base.css">
+</head>
+<body>
+    <div class="taskbar">
+        <div class="title">ArchyArch | 192.168.68.111 | debug</div>
+        <div class="rest">
+            <button>
+                <a href="/">view</a>
+            </button>
+            <button>
+                <a onclick="openFileSelector()">upload</a>
+            </button>
+        </div>
+    </div>
+    <script>
+        function openFileSelector() {
+            return new Promise((resolve, reject) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = true;
+                
+                input.onchange = (event) => {
+                    const files = event.target.files;
+                    if (files.length > 0) {
+                        for (let i = 0; i < files.length; i++) {
+                            console.log("Selected file:", files[i].name);
+                        }
+                    } else {
+                        console.log("No file selected.");
+                    }
+                };
+                
+                input.click();
+            });
+        }
+    </script>
+</body>
+</html>
