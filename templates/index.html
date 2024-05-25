@@ -35,9 +35,10 @@
                 const nc = document.createElement("div");
                 nc.classList.add("item");
                 if(String(element).endsWith(".jpg")){ 
-                    nc.innerText = `<img src="${element}"></img>`
+                    nc.innerHTML = `<img src="${element}"></img>`
                 } else if (String(element).endsWith(".mp4")) {
-                    nc.innerText = `<video src="${element}"></video>`
+                    nc.innerHTML = `<video src="${element}"></video>`
+                      //      
                 }
                 const nc2 = document.createElement("div");
                 nc2.classList.add("close");
