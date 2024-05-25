@@ -34,14 +34,19 @@
                 console.log(element)
                 const nc = document.createElement("div");
                 nc.classList.add("item");
-                nc.addEventListener("click",()=>{
-                    getData(`delete/${element}`)
-                })
                 nc.innerHTML = `
                 <img src="${element}"></img>
                 <div class="close">x</div>
                 `
-                document.getElementsByClassName("content")[0].append(nc)
+                const nc2 = document.createElement("div");
+                nc2.classList.add("close");
+                nc2.innerHTML = "x";
+                nc2.addEventListener("click",()=>{ 
+                    nc.remove()
+                    getData(`delete/${element}`)
+                })
+                nc.append(nc2)
+                document.getElementsByClassName("content")[0].append(nc); 
             });
         })()
         }
