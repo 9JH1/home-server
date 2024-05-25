@@ -59,8 +59,11 @@ def upload_file():
     return 'File uploaded successfully'
 @app.route('/delete/<path:file_path>')
 def delete_file(file_path):
-    os.remove(file_path)
-    return "file deleted"
+    try:
+        os.remove(file_path)
+        return "file deleted"
+    except: 
+        return "file does not exist"
 if __name__ == "__main__":
     print("hello world")
     app.run(host="0.0.0.0")
