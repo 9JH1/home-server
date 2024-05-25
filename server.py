@@ -20,7 +20,7 @@ def render_debug():
 
 #data points
 
-@app.route("/files")
+@app.route("/files") 
 def serv_files(): 
     files = os.listdir(files_route)
     file_list = []
