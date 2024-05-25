@@ -26,7 +26,7 @@ def serv_files():
     file_list = []
     for file in files:
         if(len(file.split(".")) > 1):
-            if((file.split("."))[1] in ["jpg","jpeg"]):
+            if((file.split("."))[1] in ["jpg","jpeg","mp4"]):
                 file_list.append(f"{files_route}{file}")
     return flask.jsonify(file_list)
 
