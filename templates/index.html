@@ -36,7 +36,7 @@
                 nc.classList.add("item");
                 nc.innerHTML = `
                 <img src="${element}"></img>
-                <div class="close">x</div>
+                <div class="close">X</div>
                 `
                 const nc2 = document.createElement("div");
                 nc2.classList.add("close");
@@ -62,10 +62,9 @@
             input.onchange = function(e) {
                 var files = e.target.files;
                 for (var i = 0; i < files.length; i++) {
-                    uploadFile(files[i]);
-                    
+                    uploadFile(files[i]);  
+                    getFiles()
                 }
-                getFiles()
             };
 
             input.click();
