@@ -23,9 +23,11 @@
     <div class="content">
     </div>
     <script>
-        const titleEle = document.getElementsByClassName("title")[0];
-        (async () => { 
-            const dataStr = await getData("info")
+        function getFiles(){
+            (async () => { 
+            const titleEle = document.getElementsByClassName("title")[0];
+            const dataStr = await getData("info");
+            dataStr.innerHTML = "";
             titleEle.innerHTML = dataStr
             const files = await getData("files");
             JSON.parse(files).forEach(element => {
@@ -37,49 +39,52 @@
                 })
                 nc.innerHTML = `
                 <img src="${element}"></img>
+                <div class="close">x</div>
                 `
                 document.getElementsByClassName("content")[0].append(nc)
             });
         })()
+        }
+        getFiles()
         function openFilePicker() {
-    var input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'all'; // Define the file types you want to accept
-    input.multiple = true; // Allow multiple files selection
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'all'; // Define the file types you want to accept
+            input.multiple = true; // Allow multiple files selection
 
-    input.onchange = function(e) {
-        var files = e.target.files;
-        for (var i = 0; i < files.length; i++) {
-            uploadFile(files[i]);
-            
+            input.onchange = function(e) {
+                var files = e.target.files;
+                for (var i = 0; i < files.length; i++) {
+                    uploadFile(files[i]);
+                    
+                }
+                getFiles()
+            };
+
+            input.click();
         }
-        location.reload()
-    };
 
-    input.click();
-}
+        function uploadFile(file) {
+            var formData = new FormData();
+            formData.append('file', file);
 
-function uploadFile(file) {
-    var formData = new FormData();
-    formData.append('file', file);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/upload', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText); // Handle success response
+                } else {
+                    console.error(xhr.statusText); // Handle error
+                }
+            };
 
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            console.log(xhr.responseText); // Handle success response
-        } else {
-            console.error(xhr.statusText); // Handle error
+            xhr.onerror = function() {
+                console.error('Request failed'); // Handle network error
+            };
+
+            xhr.send(formData);
         }
-    };
-
-    xhr.onerror = function() {
-        console.error('Request failed'); // Handle network error
-    };
-
-    xhr.send(formData);
-}
 
     </script>
 </body>

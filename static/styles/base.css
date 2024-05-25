@@ -55,7 +55,15 @@ body {
 .content .item {
     width:100%;
     height: fit-content;
+    position: relative;
 }
 .content .item img { 
     width:100%;
+}
+
+.content .item .close { 
+    width:10px;
+    height:10px;
+    background-color: red;
+    position: absolute;
 }
