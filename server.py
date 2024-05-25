@@ -62,4 +62,5 @@ def delete_file(file_path):
     os.remove(file_path)
     return "file deleted"
 if __name__ == "__main__":
+    print("hello world")
     app.run(host="0.0.0.0")
