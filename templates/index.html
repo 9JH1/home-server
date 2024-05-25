@@ -25,9 +25,9 @@
     <script>
         const titleEle = document.getElementsByClassName("title")[0];
         (async () => { 
-            const dataStr = await getData("/info")
+            const dataStr = await getData("info")
             titleEle.innerHTML = dataStr
-            const files = await getData("/files");
+            const files = await getData("files");
             JSON.parse(files).forEach(element => {
                 console.log(element)
                 const nc = document.createElement("div");
