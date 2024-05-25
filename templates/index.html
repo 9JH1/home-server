@@ -62,9 +62,9 @@
             input.onchange = function(e) {
                 var files = e.target.files;
                 for (var i = 0; i < files.length; i++) {
-                    uploadFile(files[i]);  
-                    getFiles()
+                    uploadFile(files[i]);
                 }
+                location.reload()
             };
 
             input.click();
