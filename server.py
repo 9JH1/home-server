@@ -61,7 +61,7 @@ def serv_storage():
 
         return int(total_size)
     def get_free():
-        return (get_size_of_dir("."))/1e+9
+        return (get_size_of_dir("."))
     return str(get_free())
 @app.route("/uptime")
 def seconds_elapsed():
