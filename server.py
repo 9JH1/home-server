@@ -43,11 +43,11 @@ def serve_static(filename):
 
 
 @app.route("/info_name")
-def serv_info():
+def serv_info_name():
     return socket.gethostbyname(socket.gethostname())
 
 @app.route("/info_ip")
-def serv_info():
+def serv_info_ip():
     return socket.gethostname()
 
 
