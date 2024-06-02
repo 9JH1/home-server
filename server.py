@@ -62,6 +62,7 @@ def serv_storage():
     def get_free():
         return (get_full_size() - get_size_of_dir("."))/1e+9
     return str(get_free())
+@app.route("/temp")
 def serv_temp(): 
     data = psutil.sensors_temperatures(fahrenheit=False)
     cpu_temps = []
