@@ -103,8 +103,8 @@
             </div>
         </div>
         <div class="unit">
-            <p class="title">WATTAGE</p>
-            <div class="roller" id="server-wattage">
+            <p class="title">RAM%</p>
+            <div class="roller" id="server-ram">
                 <div class="inner"></div>
             </div>
         </div>
@@ -122,7 +122,7 @@
       const temperatureEle = document.getElementById("server-temperature");
       const storageEle = document.getElementById("server-storage");
       const cpuEle = document.getElementById("server-cpu");
-      const wattageEle = document.getElementById("server-wattage");
+      const ramEle = document.getElementById("server-ram");
       const titleEle = document.getElementById("server-name");
       setInterval(() => {
         (async () => {
@@ -138,7 +138,9 @@
           temp = await getData("storage");
           storageEle.style.cssText = `--dial-percent:${temp}%`;
           storageEle.innerText = temp;
-          console.log(temp);
+          temp = await getData("ram")
+          ramEle.style.cssText = `--dial-percent:${temp}%`;
+          ramEle.innerText = temp
         })();
       }, 1000);
     </script>
