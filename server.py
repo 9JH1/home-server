@@ -45,9 +45,6 @@ def serve_static(filename):
 def serv_info():
     return f"{socket.gethostname()} | {socket.gethostbyname(socket.gethostname())}"
 
-@app.route("/restart")
-def serv_restart():
-    os.system("./start.sh")
 @app.route("/storage")
 def serv_storage():
     def get_full_size():
@@ -63,7 +60,7 @@ def serv_storage():
 
         return int(total_size)
     def get_free():
-        return get_full_size() - get_size_of_dir(".")/1e+9
+        return (get_full_size() - get_size_of_dir("."))/1e+9
     return str(get_free())
 def serv_temp(): 
     data = psutil.sensors_temperatures(fahrenheit=False)
