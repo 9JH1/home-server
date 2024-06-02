@@ -80,7 +80,7 @@ def serv_temp():
     for value in cpu_temps:
         cpu_total += value
     cpu_average = cpu_total/len(cpu_temps)
-    return cpu_average
+    return str(cpu_average)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
