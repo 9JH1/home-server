@@ -3,6 +3,7 @@ import subprocess
 import os
 import flask_cors
 import socket
+import time
 import psutil
 import shutil
 files_route = "static/resources/"
@@ -62,6 +63,13 @@ def serv_storage():
     def get_free():
         return (get_full_size() - get_size_of_dir("."))/1e+9
     return str(get_free())
+@app.route("/uptime")
+def seconds_elapsed():
+    return time.time() - psutil.boot_time()
+
+@app.route("/cpu")
+def serv_cpu():
+    return psutil.cpu_percent()
 @app.route("/temp")
 def serv_temp(): 
     data = psutil.sensors_temperatures(fahrenheit=False)
