@@ -3,8 +3,8 @@ import subprocess
 import os
 import flask_cors
 import socket
- 
-
+import psutil
+import shutil
 files_route = "static/resources/"
 
 app = flask.Flask(__name__)
@@ -36,7 +36,6 @@ def serv_all_files():
     for file in os.listdir(files_route): 
         file_list.append(f"{files_route}{file}")
     return flask.jsonify(file_list)
-
 @app.route('/resources/<path:filename>')
 def serve_static(filename):
     return flask.send_from_directory('static/resources', filename)
@@ -46,6 +45,42 @@ def serve_static(filename):
 def serv_info():
     return f"{socket.gethostname()} | {socket.gethostbyname(socket.gethostname())}"
 
+
+@app.route("/storage")
+def serv_storage():
+    def get_full_size():
+        return shutil.disk_usage("/").free
+    def get_size_of_dir(start_path = '.'):
+        total_size = 0
+        for dirpath, dirnames, filenames in os.walk(start_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                # skip if it is symbolic link
+                if not os.path.islink(fp):
+                    total_size += os.path.getsize(fp)
+
+        return int(total_size)
+    def get_free():
+        return get_full_size() - get_size_of_dir(".")/1e+9
+    return get_free()
+def serv_temp(): 
+    data = psutil.sensors_temperatures(fahrenheit=False)
+    cpu_temps = []
+    for sensor, readings in data.items():
+        if "coretemp" in sensor.lower() or "cpu" in sensor.lower():
+            for reading in readings:
+                print(f"{sensor}: {reading.current}°C")
+                cpu_temps.append(reading.current)
+    for sensor, readings in data.items():
+        if not any(x in sensor.lower() for x in ["coretemp", "cpu"]):
+            for reading in readings:
+                print(f"{sensor}: {reading.current}°C")
+
+    cpu_total = 0 
+    for value in cpu_temps:
+        cpu_total += value
+    cpu_average = cpu_total/len(cpu_temps)
+    return cpu_average
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
