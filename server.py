@@ -4,6 +4,7 @@ import os
 import flask_cors
 import socket
 import time
+import math
 import psutil
 import shutil
 files_route = "static/resources/"
@@ -63,7 +64,11 @@ def serv_info_ip():
 @app.route("/storage")
 def serv_storage():
     def get_full_size():
-        return shutil.disk_usage("/").free
+        return shutil.disk_usage("/").total
+    
+    def get_used_space():
+        return get_size_of_dir()
+    
     def get_size_of_dir(start_path = '.'):
         total_size = 0
         for dirpath, dirnames, filenames in os.walk(start_path):
@@ -73,12 +78,17 @@ def serv_storage():
                 if not os.path.islink(fp):
                     total_size += os.path.getsize(fp)
 
-        return int(total_size)
+        return total_size
     
-    return ""
-
-
-
+    total_space = get_full_size()
+    used_space = get_used_space()
+    
+    if total_space == 0:
+        percentage_used = 0
+    else:
+        percentage_used = (used_space / total_space) * 100
+    
+    return str(round(percentage_used, 2)) + "%"
 
 
 

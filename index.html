@@ -80,7 +80,7 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="name" id="server-name">ServerTitleName</div>
+        <div class="name" id="server-name"></div>
         <div class="status">
             <div class="line">
                 <div class="roller" id="server-temperature">
@@ -117,7 +117,7 @@
                 let temp = await getData("temp");
                 temperatureEle.style.cssText = `--dial-percent:${temp}%;`; 
                 temperatureEle.innerText = temp
-                temp = await getData("info_ip"); 
+                temp = await getData("info_name"); 
                 titleEle.innerText = temp
                 titleEle.title = await getData("info_ip")
                 temp = await getData("cpu");
