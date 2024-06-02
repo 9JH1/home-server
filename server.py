@@ -93,7 +93,9 @@ def serv_storage():
 
 
 
-
+@app.route("/ram")
+def serv_ram():
+    return psutil.virtual_memory().percent
 
 
 
