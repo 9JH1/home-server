@@ -60,7 +60,7 @@
             align-items: center;
             justify-content: center;
             background: 
-                radial-gradient(closest-side, var(--color) 79%, transparent 80% 100%),
+                radial-gradient(closest-side, var(--background) 79%, transparent 80% 100%),
                 conic-gradient(var(--accent) var(--dial-percent), transparent 0);
             .inner { 
                 position: absolute;   
@@ -83,18 +83,18 @@
         <div class="status">
             <div class="line">
                 <div class="roller" id="server-temperature">
-                    <div class="inner">20px</div>
+                    <div class="inner"></div>
                 </div>
                 <div class="roller" id="server-cpu">
-                    <div class="inner">20px</div>
+                    <div class="inner"></div>
                 </div>
             </div>
             <div class="line">
                 <div class="roller" id="server-storage">
-                    <div class="inner">20px</div>
+                    <div class="inner"></div>
                 </div>
                 <div class="roller" id="server-wattage">
-                    <div class="inner">20px</div>
+                    <div class="inner"></div>
                 </div>
             </div>
         </div>
@@ -111,8 +111,14 @@
         const cpuEle = document.getElementById("server-cpu");
         const wattageEle = document.getElementById("server-wattage");
         (async ()=>{
-            temperatureEle.style.cssText = `--dial-percent:${await getData("temp")}%;`
-            console.log(await getData("cpu"))
+            let temp = await getData("temp");
+            temperatureEle.style.cssText = `--dial-percent:${temp}%;`; 
+            temperatureEle.innerText = temp;
+            temp = await getData("cpu");
+            cpuEle.style.cssText = `--dial-percent:${temp}%`;
+            cpuEle.innerText = temp;
+            temp = await getData("storage")
+            console.log(temp)
         })()
     </script>
 </body>
