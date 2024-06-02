@@ -45,7 +45,9 @@ def serve_static(filename):
 def serv_info():
     return f"{socket.gethostname()} | {socket.gethostbyname(socket.gethostname())}"
 
-
+@app.route("/restart")
+def serv_restart():
+    os.system("./start.sh")
 @app.route("/storage")
 def serv_storage():
     def get_full_size():
