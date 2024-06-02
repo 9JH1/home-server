@@ -125,6 +125,7 @@
                 cpuEle.innerText = temp;
                 temp = await getData("storage");
                 storageEle.style.cssText = `--dial-percent:${temp}%`;
+                storageEle.innerText = temp
                 console.log(temp);
 
             })() 

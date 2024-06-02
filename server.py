@@ -88,7 +88,7 @@ def serv_storage():
     else:
         percentage_used = (used_space / total_space) * 100
     
-    return str(round(percentage_used, 2)) + "%"
+    return str(round(percentage_used, 2))
 
 
 
