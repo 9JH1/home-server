@@ -52,12 +52,6 @@ def serv_info_ip():
     return socket.gethostbyname(socket.gethostname())
 
 
-
-
-
-
-
-
 @app.route("/ping")
 def get_ping():
     try:

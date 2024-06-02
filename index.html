@@ -7,14 +7,14 @@
     <style>
       @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
       :root {
-        --background: white;
-        --foreground_1: #c8c8c8;
-        --color: black;
+        --background: rgb(24, 19, 41);
+        --foreground_1: #1b2130;
+        --color: rgb(255, 255, 255);
         --foreground_2: #d9d9d9;
-        --accent: grey;
+        --accent: rgb(51, 145, 149);
       }
       body {
-        font-size: 2vw;
+        font-size: 1vw;
         font-family: "IBM Plex Mono";
         width: 100vw;
         height: 100vh;
@@ -24,8 +24,11 @@
         background: var(--background);
         color: var(--color);
         display: flex;
+        justify-content: end;
+
         .sidebar {
-          width: 30%;
+          min-width: 15vw;
+          max-width:15vw;
           height: 100%;
           background-color: var(--foreground_1);
           .name {
@@ -33,17 +36,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            padding: 2vh;
             box-sizing: border-box;
-            border-bottom: solid 1px var(--accent);
+            border-bottom: solid 0.5vh var(--accent);
+            font-weight: bold;
           }
           .status {
-            padding-top:10px;
+            padding-top:2vh;
             display:flex;
             align-items: center;
             justify-content: space-evenly;
-            border-bottom: solid 1px var(--accent);
+            border-bottom: solid 0.5vh var(--accent);
             flex-wrap:wrap;
+            
             .unit {
                 width:50%;
                 overflow:hidden;
@@ -51,7 +56,7 @@
                 display:flex;
                 align-items: center;
                 justify-content: space-between;
-                margin-bottom:1vh;
+                margin-bottom:1vw;
                 .title { 
                     padding:0;
                     margin:0;
@@ -63,23 +68,39 @@
                 display:flex;
                 align-items: center;
                 justify-content: space-between;
-                padding:10px;
+                padding:1vh 1.5vh;
+                .value {
+                    color:var(--accent);
+                    font-weight: bold;
+                }
             }
+          }
+          .database { 
+            width:100%;
+            height:10%;
+            background-color: red;
           }
         }
         .rest {
-          width: 20%;
+          min-width: 100vw;
           height: 100%;
+          display:flex;
+          align-items: center;
+          justify-content: center;
+          color:var(--accent);
+          transition: min-width 1s ease;
         }
       }
       .roller {
-        width: 12vw;
-        height: 12vw;
+        width: 6vw;
+        height: 6vw;
         border-radius: 50%;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-weight: bold;
+        color:var(--accent);
         background: radial-gradient(
             closest-side,
             var(--background) 85%,
@@ -90,7 +111,7 @@
     </style>
   </head>
   <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
       <div class="name" id="server-name"></div>
       <div class="status">
         <div class="unit">
@@ -118,15 +139,27 @@
             </div>
         </div>
         <div class="line">
-            <div class="title">TITLE</div>
-            <div class="value">00.0</div>
+            <div class="title">PING</div>
+            <div class="value" id="server-ping"></div>
+        </div>
+
+        <div class="line">
+            <div class="title">IP</div>
+            <div class="value" id="server-ip"></div>
         </div>
       </div>
       <div class="database">
-        <div class="inner"></div>
+        <div class="inner">
+            <div class="folder">
+                <div class="title">DataServerMain</div>
+                <div class="data-storage">2GB</div>
+            </div>
+        </div>
       </div>
     </div>
-    <div class="rest"></div>
+    <div class="rest" id="rest">
+        Select a database from the left
+    </div>
     <script>
       function getData(endpoint) {
         return fetch(`http://192.168.68.110/${endpoint}`)
@@ -140,26 +173,53 @@
       const cpuEle = document.getElementById("server-cpu");
       const ramEle = document.getElementById("server-ram");
       const titleEle = document.getElementById("server-name");
+      const pingEle = document.getElementById("server-ping");
+      const ipEle = document.getElementById("server-ip"); 
+      const sidebar = document.getElementById("sidebar");
+      const rest = document.getElementById("rest");
       setInterval(() => {
         (async () => {
           let temp = await getData("temp");
           temperatureEle.style.cssText = `--dial-percent:${temp}%;`;
           temperatureEle.innerText = temp;
-          temp = await getData("info_name");
+        })();
+        (async () => {
+          let temp = await getData("info_name");
           titleEle.innerText = temp;
+        })();
+        (async () => {
           titleEle.title = await getData("info_ip");
-          temp = await getData("cpu");
+        })();
+        (async () => {
+          let temp = await getData("cpu");
           cpuEle.style.cssText = `--dial-percent:${temp}%`;
           cpuEle.innerText = temp;
-          temp = await getData("storage");
+        })();
+        (async () => {
+          let temp = await getData("storage");
           storageEle.style.cssText = `--dial-percent:${temp}%`;
           storageEle.innerText = temp;
-          temp = await getData("ram");
+        })();
+        (async () => {
+          let temp = await getData("ram");
           ramEle.style.cssText = `--dial-percent:${temp}%`;
           ramEle.innerText = temp;
         })();
+        (async () => {
+          let temp = await getData("ping"); 
+          pingEle.innerText = temp;
+        })();
+        (async () => {
+          let temp = await getData("info_ip");
+          ipEle.innerHTML = temp;
+        })();
       }, 1000);
-      
+      setTimeout(()=>{
+        rest.style.minWidth = "85vw";
+        setTimeout(()=>{
+            rest.style.transition = "all 0.4s ease"
+        },1000)
+      },1000)
     </script>
   </body>
 </html>

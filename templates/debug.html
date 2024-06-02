@@ -1,44 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="static/styles/base.css">
-</head>
-<body>
-    <div class="taskbar">
-        <div class="title">ArchyArch | 192.168.68.111 | debug</div>
-        <div class="rest">
-            <button>
-                <a href="/">view</a>
-            </button>
-            <button>
-                <a onclick="openFileSelector()">upload</a>
-            </button>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+      :root {
+        --background: rgb(24, 19, 41);
+        --foreground_1: #1b2130;
+        --color: rgb(255, 255, 255);
+        --foreground_2: #d9d9d9;
+        --accent: rgb(51, 145, 149);
+      }
+      body {
+        font-size: 1vw;
+        font-family: "IBM Plex Mono";
+        width: 100vw;
+        height: 100vh;
+        padding: 0px;
+        margin: 0;
+        overflow: hidden;
+        background: var(--background);
+        color: var(--color);
+        display: flex;
+        justify-content: end;
+
+        .sidebar {
+          min-width: 15vw;
+          max-width:15vw;
+          height: 100%;
+          background-color: var(--foreground_1);
+          .name {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2vh;
+            box-sizing: border-box;
+            border-bottom: solid 0.5vh var(--accent);
+            font-weight: bold;
+          }
+          .status {
+            padding-top:2vh;
+            display:flex;
+            align-items: center;
+            justify-content: space-evenly;
+            border-bottom: solid 0.5vh var(--accent);
+            flex-wrap:wrap;
+            
+            .unit {
+                width:50%;
+                overflow:hidden;
+                flex-direction: column;
+                display:flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom:1vw;
+                .title { 
+                    padding:0;
+                    margin:0;
+                    text-align: center;
+                }
+            }
+            .line { 
+                width:100%;
+                display:flex;
+                align-items: center;
+                justify-content: space-between;
+                padding:1vh 1.5vh;
+                .value {
+                    color:var(--accent);
+                    font-weight: bold;
+                }
+            }
+          }
+          .database { 
+            width:100%;
+            height:10%;
+            background-color: red;
+          }
+        }
+        .rest {
+          min-width: 100vw;
+          height: 100%;
+          display:flex;
+          align-items: center;
+          justify-content: center;
+          color:var(--accent);
+          transition: min-width 1s ease;
+        }
+      }
+      .roller {
+        width: 6vw;
+        height: 6vw;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color:var(--accent);
+        background: radial-gradient(
+            closest-side,
+            var(--background) 85%,
+            transparent 80% 100%
+          ),
+          conic-gradient(var(--accent) var(--dial-percent), transparent 0);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar" id="sidebar">
+      <div class="name" id="server-name"></div>
+      <div class="status">
+        <div class="unit">
+            <p class="title">TEMP (c)</p>
+            <div class="roller" id="server-temperature">
+                <div class="inner"></div>
+            </div>
         </div>
+        <div class="unit">
+            <p class="title">CPU %</p>
+            <div class="roller" id="server-cpu">
+              <div class="inner"></div>
+            </div>
+        </div>
+        <div class="unit">
+            <p class="title">STORAGE</p>
+            <div class="roller" id="server-storage">
+                <div class="inner"></div>
+            </div>
+        </div>
+        <div class="unit">
+            <p class="title">RAM %</p>
+            <div class="roller" id="server-ram">
+                <div class="inner"></div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="title">PING</div>
+            <div class="value" id="server-ping"></div>
+        </div>
+
+        <div class="line">
+            <div class="title">IP</div>
+            <div class="value" id="server-ip"></div>
+        </div>
+      </div>
+      <div class="database">
+        <div class="inner">
+            <div class="folder">
+                <div class="title">DataServerMain</div>
+                <div class="data-storage">2GB</div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="rest" id="rest">
+        Select a database from the left
     </div>
     <script>
-        function openFileSelector() {
-            return new Promise((resolve, reject) => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.multiple = true;
-                
-                input.onchange = (event) => {
-                    const files = event.target.files;
-                    if (files.length > 0) {
-                        for (let i = 0; i < files.length; i++) {
-                            console.log("Selected file:", files[i].name);
-                        }
-                    } else {
-                        console.log("No file selected.");
-                    }
-                };
-                
-                input.click();
-            });
-        }
+      function getData(endpoint) {
+        return fetch(`http://192.168.68.110/${endpoint}`)
+          .then((res) => res.text())
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      const temperatureEle = document.getElementById("server-temperature");
+      const storageEle = document.getElementById("server-storage");
+      const cpuEle = document.getElementById("server-cpu");
+      const ramEle = document.getElementById("server-ram");
+      const titleEle = document.getElementById("server-name");
+      const pingEle = document.getElementById("server-ping");
+      const ipEle = document.getElementById("server-ip"); 
+      const sidebar = document.getElementById("sidebar");
+      const rest = document.getElementById("rest");
+      setInterval(() => {
+        (async () => {
+          let temp = await getData("temp");
+          temperatureEle.style.cssText = `--dial-percent:${temp}%;`;
+          temperatureEle.innerText = temp;
+        })();
+        (async () => {
+          let temp = await getData("info_name");
+          titleEle.innerText = temp;
+        })();
+        (async () => {
+          titleEle.title = await getData("info_ip");
+        })();
+        (async () => {
+          let temp = await getData("cpu");
+          cpuEle.style.cssText = `--dial-percent:${temp}%`;
+          cpuEle.innerText = temp;
+        })();
+        (async () => {
+          let temp = await getData("storage");
+          storageEle.style.cssText = `--dial-percent:${temp}%`;
+          storageEle.innerText = temp;
+        })();
+        (async () => {
+          let temp = await getData("ram");
+          ramEle.style.cssText = `--dial-percent:${temp}%`;
+          ramEle.innerText = temp;
+        })();
+        (async () => {
+          let temp = await getData("ping"); 
+          pingEle.innerText = temp;
+        })();
+        (async () => {
+          let temp = await getData("info_ip");
+          ipEle.innerHTML = temp;
+        })();
+      }, 1000);
+      setTimeout(()=>{
+        rest.style.minWidth = "85vw";
+        setTimeout(()=>{
+            rest.style.transition = "all 0.4s ease"
+        },1000)
+      },1000)
     </script>
-</body>
+  </body>
 </html>
