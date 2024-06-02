@@ -62,7 +62,7 @@ def serv_storage():
         return int(total_size)
     def get_free():
         return get_full_size() - get_size_of_dir(".")/1e+9
-    return get_free()
+    return int(get_free())
 def serv_temp(): 
     data = psutil.sensors_temperatures(fahrenheit=False)
     cpu_temps = []
