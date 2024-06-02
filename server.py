@@ -65,11 +65,11 @@ def serv_storage():
     return str(get_free())
 @app.route("/uptime")
 def seconds_elapsed():
-    return time.time() - psutil.boot_time()
+    return str(time.time() - psutil.boot_time())
 
 @app.route("/cpu")
 def serv_cpu():
-    return psutil.cpu_percent()
+    return str(psutil.cpu_percent())
 @app.route("/temp")
 def serv_temp(): 
     data = psutil.sensors_temperatures(fahrenheit=False)
