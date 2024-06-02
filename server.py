@@ -58,8 +58,14 @@ def serv_info_ip():
 
 
 
-
-
+@app.route("/ping")
+def get_ping():
+    try:
+        result = subprocess.run(['ping', '-c', '1', 'google.com'], capture_output=True, text=True, timeout=10)
+        ping_time = result.stdout.split("time=")[1].split(" ")[0]
+        return float(ping_time)
+    except (IndexError, subprocess.TimeoutExpired):
+        return None
 
 @app.route("/storage")
 def serv_storage():
