@@ -3,3 +3,18 @@ function getData(endpoint) {
       .then((res) => res.text())
       .catch((error) => {});
   }
+
+
+
+
+  /*
+
+
+
+  laptop
+    disk usage
+    free space
+
+  usb
+    disk space
+  */

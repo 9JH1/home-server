@@ -14,6 +14,7 @@
             --accent:grey;
         }
         body { 
+            font-size:2vw;
             font-family: 'IBM Plex Mono';
             width:100vw;
             height:100vh; 
@@ -79,7 +80,7 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="name" title="127.0.0.1">ServerTitleName</div>
+        <div class="name" id="server-name">ServerTitleName</div>
         <div class="status">
             <div class="line">
                 <div class="roller" id="server-temperature">
@@ -104,22 +105,30 @@
         function getData(endpoint) {
             return fetch(`http://192.168.68.110/${endpoint}`)
             .then((res) => res.text())
-            .catch((error) => {});
+            .catch((error) => {console.error(error)});
         }
         const temperatureEle = document.getElementById("server-temperature");
         const storageEle = document.getElementById("server-storage");
         const cpuEle = document.getElementById("server-cpu");
         const wattageEle = document.getElementById("server-wattage");
-        (async ()=>{
-            let temp = await getData("temp");
-            temperatureEle.style.cssText = `--dial-percent:${temp}%;`; 
-            temperatureEle.innerText = temp;
-            temp = await getData("cpu");
-            cpuEle.style.cssText = `--dial-percent:${temp}%`;
-            cpuEle.innerText = temp;
-            temp = await getData("storage")
-            console.log(temp)
-        })()
+        const titleEle = document.getElementById("server-name");
+        setInterval(() => {
+            (async ()=>{
+                let temp = await getData("temp");
+                temperatureEle.style.cssText = `--dial-percent:${temp}%;`; 
+                temperatureEle.innerText = temp
+                temp = await getData("info_name"); 
+                titleEle.innerText = temp
+                titleEle.title = await getData("info_ip")
+                temp = await getData("cpu");
+                cpuEle.style.cssText = `--dial-percent:${temp}%`;
+                cpuEle.innerText = temp;
+                temp = await getData("storage");
+                storageEle.style.cssText = `--dial-percent:${temp}%`;
+                console.log(temp);
+
+            })() 
+        }, 1000);
     </script>
 </body>
 </html>

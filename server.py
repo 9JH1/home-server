@@ -42,9 +42,23 @@ def serve_static(filename):
     return flask.send_from_directory('static/resources', filename)
 
 
-@app.route("/info")
+@app.route("/info_name")
 def serv_info():
-    return f"{socket.gethostname()} | {socket.gethostbyname(socket.gethostname())}"
+    return socket.gethostbyname(socket.gethostname())
+
+@app.route("/info_ip")
+def serv_info():
+    return socket.gethostname()
+
+
+
+
+
+
+
+
+
+
 
 @app.route("/storage")
 def serv_storage():
@@ -60,9 +74,22 @@ def serv_storage():
                     total_size += os.path.getsize(fp)
 
         return int(total_size)
-    def get_free():
-        return (get_size_of_dir("."))
-    return str(get_free())
+    
+    return ""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.route("/uptime")
 def seconds_elapsed():
     return str(time.time() - psutil.boot_time())
