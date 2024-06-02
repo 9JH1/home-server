@@ -117,7 +117,7 @@
                 let temp = await getData("temp");
                 temperatureEle.style.cssText = `--dial-percent:${temp}%;`; 
                 temperatureEle.innerText = temp
-                temp = await getData("info_name"); 
+                temp = await getData("info_ip"); 
                 titleEle.innerText = temp
                 titleEle.title = await getData("info_ip")
                 temp = await getData("cpu");
