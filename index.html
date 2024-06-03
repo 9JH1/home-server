@@ -78,7 +78,15 @@
           .database { 
             width:100%;
             height:10%;
-            background-color: red;
+            .folders { 
+              display:flex;
+              align-items: center;
+              justify-content: space-between;
+              padding:1vh 1.5vh;
+              cursor:pointer;
+              
+            }
+
           }
         }
         .rest {
@@ -108,6 +116,27 @@
           ),
           conic-gradient(var(--accent) var(--dial-percent), transparent 0);
       }
+      @media  screen and (orientation:portrait) {
+        body { 
+          font-size:1.4em !important;
+          display:block !important;
+          overflow-y: scroll;
+          scrollbar-width: thin;
+          .sidebar {
+            min-width: 100vw !important;
+            max-width:100vw !important;
+            height:fit-content !important;
+            .roller { 
+              width:30vw;
+              height:30vw;
+            }
+          }
+          .rest { 
+            width: 100vw !important;
+            height:100vh;
+          }
+        }
+      }
     </style>
   </head>
   <body>
@@ -115,13 +144,13 @@
       <div class="name" id="server-name"></div>
       <div class="status">
         <div class="unit">
-            <p class="title">TEMP (c)</p>
+            <p class="title">TEMP</p>
             <div class="roller" id="server-temperature">
                 <div class="inner"></div>
             </div>
         </div>
         <div class="unit">
-            <p class="title">CPU %</p>
+            <p class="title">CPU</p>
             <div class="roller" id="server-cpu">
               <div class="inner"></div>
             </div>
@@ -133,7 +162,7 @@
             </div>
         </div>
         <div class="unit">
-            <p class="title">RAM %</p>
+            <p class="title">RAM</p>
             <div class="roller" id="server-ram">
                 <div class="inner"></div>
             </div>
@@ -149,16 +178,14 @@
         </div>
       </div>
       <div class="database">
-        <div class="inner">
-            <div class="folder">
-                <div class="title">DataServerMain</div>
-                <div class="data-storage">2GB</div>
-            </div>
+        <div class="folders">
+          <div class="title">DataServerMain</div>
+          <div class="data-storage">2GB</div>
         </div>
       </div>
     </div>
     <div class="rest" id="rest">
-        Select a database from the left
+        Select a database from the sidebar
     </div>
     <script>
       function getData(endpoint) {

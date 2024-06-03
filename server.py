@@ -15,32 +15,27 @@ CORS = flask_cors.CORS(app)
 @app.route("/") 
 def render_home(): 
     return flask.render_template("index.html")
-
-@app.route("/debug")
-def render_debug(): 
-    return flask.render_template("debug.html")
-
 #data points
 
 @app.route("/files") 
 def serv_files(): 
-    files = os.listdir(files_route)
-    file_list = []
-    for file in files:
-        if(len(file.split(".")) > 1):
-            if((file.split("."))[1] in ["jpg","jpeg","mp4"]):
-                file_list.append(f"{files_route}{file}")
-    return flask.jsonify(file_list)
+    def explore_helper():
+        result = {}
+        for item in os.listdir():
+            item_path = os.path.join(f"static/resources/", item)
+            if os.path.isfile(item_path):
+                result[item] = item_path
+            elif os.path.isdir(item_path):
+                result[item] = explore_helper(item_path)
+        return result
 
-@app.route("/all_files")
-def serv_all_files(): 
-    file_list = []
-    for file in os.listdir(files_route): 
-        file_list.append(f"{files_route}{file}")
-    return flask.jsonify(file_list)
-@app.route('/resources/<path:filename>')
+@app.route('/<path:filename>')
 def serve_static(filename):
     return flask.send_from_directory('static/resources', filename)
+
+@app.route("/folder")
+def serv_files():
+    return os.listdir(f"static/resources/")
 
 
 @app.route("/info_name")

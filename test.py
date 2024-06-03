@@ -1,21 +1,14 @@
-import subprocess
+import os
 
-def get_ping():
-    try:
-        # Execute the ping command and capture the output
-        result = subprocess.run(['ping', '-c', '1', 'google.com'], capture_output=True, text=True, timeout=10)
-        
-        # Extracting the ping time from the output
-        ping_time = result.stdout.split("time=")[1].split(" ")[0]
-        
-        return float(ping_time)
-    
-    except (IndexError, subprocess.TimeoutExpired):
-        return None
+def explore_helper(folder_path):
+    result = {}
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
+        if os.path.isfile(item_path):
+            result[item] = item_path
+        elif os.path.isdir(item_path):
+            result[item] = explore_helper(item_path)
+    return result
 
-# Example usage
-ping = get_ping()
-if ping is not None:
-    print("Current ping time:", ping, "ms")
-else:
-    print("Unable to determine ping time.")
+print(explore_helper("/home/_3hy/Documents/home-server/static"))
+
