@@ -28,15 +28,11 @@ def serv_files():
             elif os.path.isdir(item_path):
                 result[item] = explore_helper(item_path)
         return result
+    return explore_helper()
 
 @app.route('/<path:filename>')
 def serve_static(filename):
     return flask.send_from_directory('static/resources', filename)
-
-@app.route("/folder")
-def serv_folders():
-    return os.listdir(f"static/resources/")
-
 
 @app.route("/info_name")
 def serv_info_name():
