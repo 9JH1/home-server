@@ -34,7 +34,7 @@ def serve_static(filename):
     return flask.send_from_directory('static/resources', filename)
 
 @app.route("/folder")
-def serv_files():
+def serv_folders():
     return os.listdir(f"static/resources/")
 
 
