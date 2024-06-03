@@ -241,6 +241,9 @@
           ipEle.innerHTML = temp;
         })();
       }, 1000);
+      (async () => {
+          let temp = JSON.parse(await getData("files"))
+        })();
       setTimeout(()=>{
         rest.style.minWidth = "85vw";
         setTimeout(()=>{

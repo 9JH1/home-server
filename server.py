@@ -28,7 +28,7 @@ def list_files():
                 current_dir[folder] = {}
             current_dir = current_dir[folder]
         for file in files:
-            current_dir[file] = str(os.path.join(root, file)).replace("static/","")
+            current_dir[file] = str(os.path.join(root, file)).replace("static/resources","")
     return result
 
 
