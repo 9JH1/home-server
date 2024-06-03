@@ -18,17 +18,18 @@ def render_home():
 #data points
 
 @app.route("/files") 
-def serv_files(): 
-    def explore_helper():
-        result = {}
-        for item in os.listdir():
-            item_path = os.path.join(f"static/resources/", item)
-            if os.path.isfile(item_path):
-                result[item] = item_path
-            elif os.path.isdir(item_path):
-                result[item] = explore_helper(item_path)
-        return result
-    return explore_helper()
+def list_files(start_path):
+    result = {}
+    for root, dirs, files in os.walk(start_path):
+        current_dir = result
+        folders = root.split(os.sep)[1:]
+        for folder in folders:
+            if folder not in current_dir:
+                current_dir[folder] = {}
+            current_dir = current_dir[folder]
+        for file in files:
+            current_dir[file] = None
+    return result
 
 @app.route('/<path:filename>')
 def serve_static(filename):
