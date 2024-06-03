@@ -18,9 +18,9 @@ def render_home():
 #data points
 
 @app.route("/files") 
-def list_files(start_path):
+def list_files():
     result = {}
-    for root, dirs, files in os.walk(start_path):
+    for root, dirs, files in os.walk("static/resources"):
         current_dir = result
         folders = root.split(os.sep)[1:]
         for folder in folders:
