@@ -28,8 +28,9 @@ def list_files():
                 current_dir[folder] = {}
             current_dir = current_dir[folder]
         for file in files:
-            current_dir[file] = None
+            current_dir[file] = os.path.join(root, file)
     return result
+
 
 @app.route('/<path:filename>')
 def serve_static(filename):
