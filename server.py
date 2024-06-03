@@ -31,7 +31,6 @@ def list_files():
             current_dir[file] = str(os.path.join(root, file)).replace("static/resources","")
     return result
 
-
 @app.route('/<path:filename>')
 def serve_static(filename):
     return flask.send_from_directory('static/resources', filename)
@@ -44,7 +43,6 @@ def serv_info_name():
 def serv_info_ip():
     return socket.gethostbyname(socket.gethostname())
 
-
 @app.route("/ping")
 def get_ping():
     try:
@@ -53,7 +51,7 @@ def get_ping():
         return str(ping_time)
     except (IndexError, subprocess.TimeoutExpired):
         return None
-
+    
 @app.route("/storage")
 def serv_storage():
     def get_full_size():
