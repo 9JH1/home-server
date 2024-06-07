@@ -19,7 +19,6 @@ esure you have a laptop running prosumably linux ( arch if possible ) and make s
         proxy_ssl_verify off;
         client_max_body_size 1000M;
     }
-}
-  ```
+} ```
 - 4 run the setup command ```./start.sh```
 - 5 run ```ip addr show```, look for you IP address eg ```192.168.68.110``` and type that into a browser on any device connected to the same wifi network as you
