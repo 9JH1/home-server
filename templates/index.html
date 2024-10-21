@@ -5,276 +5,312 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
-      :root {
-        --background: rgb(24, 19, 41);
-        --foreground_1: #1e092e;
-        --color: rgb(255, 255, 255);
-        --foreground_2: #d9d9d9;
-        --accent: #d72371; 
+      * {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
-      body {
-        font-size: 1vw;
-        font-family: "IBM Plex Mono";
-        width: 100vw;
-        height: 100vh;
-        padding: 0px;
-        margin: 0;
-        overflow: hidden;
-        background: var(--background);
-        color: var(--color);
+      body { 
+        background-color: var(--background);
+      }
+      :root { 
+        --background: #000000;
+        --foreground: #ffffff;
+        --surface_background: #353535;
+        --surface_foreground: #cccccc;
+        --accent: rgb(105, 60, 105);
+        
+      }
+      .info {
+        position: fixed;
+				width:100%;
+        user-select: none;
+				box-sizing:border-box;
+        background: var(--surface_background);
+        color: rgb(255, 255, 255);
+        border-radius: 10px;
+        padding:5px 0px;
         display: flex;
-        justify-content: end;
-
-        .sidebar {
-          min-width: 15vw;
-          max-width:15vw;
-          height: 100%;
-          background-color: var(--foreground_1);
-          .name {
-            width: 100%;
+        .block {
+          margin:0px 5px;
+          background: var(--accent);
+          padding: 5px 10px;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width:50px;
+          justify-content: space-between;
+          .value {
+            opacity: 0.5;
+          }
+          svg {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2vh;
-            box-sizing: border-box;
-            border-bottom: solid 0.5vh var(--accent);
-            font-weight: bold;
-          }
-          .status {
-            padding-top:2vh;
-            display:flex;
-            align-items: center;
-            justify-content: space-evenly;
-            border-bottom: solid 0.5vh var(--accent);
-            flex-wrap:wrap;
-            
-            .unit {
-                width:50%;
-                overflow:hidden;
-                flex-direction: column;
-                display:flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom:1vw;
-                .title { 
-                    padding:0;
-                    margin:0;
-                    text-align: center;
-                }
-            }
-            .line { 
-                width:100%;
-                display:flex;
-                align-items: center;
-                justify-content: space-between;
-                padding:1vh 1.5vh;
-                .value {
-                    color:var(--accent);
-                    font-weight: bold;
-                }
-            }
-          }
-          .database { 
-            width:100%;
-            height:10%;
-            .folders { 
-              display:flex;
-              align-items: center;
-              justify-content: space-between;
-              padding:1vh 1.5vh;
-              cursor:pointer;
-              
-            }
-
           }
         }
-        .rest {
-          min-width: 100vw;
-          height: 100%;
-          display:flex;
+        .block-small { 
+          display:flex; 
           align-items: center;
           justify-content: center;
-          color:var(--accent);
-          transition: min-width 1s ease;
+          background-color: var(--accent);
+          margin: 0px 5px;
+          padding:5px;
+          border-radius: 5px;
+          cursor:pointer;
+          
+          svg { 
+            display:flex;
+          }
         }
       }
-      .roller {
-        width: 6vw;
-        height: 6vw;
-        border-radius: 50%;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color:var(--accent);
-        background: radial-gradient(
-            closest-side,
-            var(--background) 85%,
-            transparent 80% 100%
-          ),
-          conic-gradient(var(--accent) var(--dial-percent), transparent 0);
+      .icon-button:hover { 
+        transition: all 0.3 ease;
+        scale:1.2;
       }
-      @media  screen and (orientation:portrait) {
-        body { 
-          font-size:1.4em !important;
-          display:block !important;
-          overflow-y: scroll;
-          scrollbar-width: thin;
-          .sidebar {
-            min-width: 100vw !important;
-            max-width:100vw !important;
-            height:fit-content !important;
-            .roller { 
-              width:30vw;
-              height:30vw;
-            }
-          }
-          .rest { 
-            width: 100vw !important;
-            height:100vh;
-            font-size:0.6em;
-          }
+      #server-files { 
+        * { 
+          width:100%;
+          animation: loadanimation 3s infinite;
+
+        }
+      }
+      @keyframes loadanimation { 
+        from { 
+          background:white;
+        } to  { 
+          background:black;
         }
       }
     </style>
   </head>
   <body>
-    <div class="sidebar" id="sidebar">
-      <div class="name" id="server-name"></div>
-      <div class="status">
-        <div class="unit">
-            <p class="title">TEMP</p>
-            <div class="roller" id="server-temperature">
-                <div class="inner"></div>
-            </div>
-        </div>
-        <div class="unit">
-            <p class="title">CPU</p>
-            <div class="roller" id="server-cpu">
-              <div class="inner"></div>
-            </div>
-        </div>
-        <div class="unit">
-            <p class="title">STORAGE</p>
-            <div class="roller" id="server-storage">
-                <div class="inner"></div>
-            </div>
-        </div>
-        <div class="unit">
-            <p class="title">RAM</p>
-            <div class="roller" id="server-ram">
-                <div class="inner"></div>
-            </div>
-        </div>
-        <div class="line">
-            <div class="title">PING</div>
-            <div class="value" id="server-ping"></div>
-        </div>
+    <div class="info" id="sidebar">
+      <div class="block-small">
+        <span id="sidebar-toggle" class="icon icon-button">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm540-453h100v-107H700v107Zm0 186h100v-106H700v106ZM160-240h460v-480H160v480Zm540 0h100v-107H700v107Z"/></svg>
+        </span>
+      </div>
+      <div class="block-small">
+        <span id="refresh" class="icon icon-button">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
+          </svg>
+        </span>
+      </div>
+      <div class="block">
+        <span class="icon"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path
+              d="M240-360h80v-240h-80v240Zm200 0h80v-240h-80v240Zm200 0h80v-240h-80v240Zm-480 80h640v-400H160v400Zm0 0v-400 400Zm40 160v-80h-40q-33 0-56.5-23.5T80-280v-400q0-33 23.5-56.5T160-760h40v-80h80v80h160v-80h80v80h160v-80h80v80h40q33 0 56.5 23.5T880-680v400q0 33-23.5 56.5T800-200h-40v80h-80v-80H520v80h-80v-80H280v80h-80Z"
+            /></svg
+        ></span>
+        <span class="value" id="server-ram">00.0</span>
+      </div>
+      <div class="block">
+        <span class="icon"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path
+              d="M360-360v-240h240v240H360Zm80-80h80v-80h-80v80Zm-80 320v-80h-80q-33 0-56.5-23.5T200-280v-80h-80v-80h80v-80h-80v-80h80v-80q0-33 23.5-56.5T280-760h80v-80h80v80h80v-80h80v80h80q33 0 56.5 23.5T760-680v80h80v80h-80v80h80v80h-80v80q0 33-23.5 56.5T680-200h-80v80h-80v-80h-80v80h-80Zm320-160v-400H280v400h400ZM480-480Z"
+            /></svg
+        ></span>
+        <span class="value" id="server-cpu">00.0</span>
+      </div>
+      <div class="block">
+        <span class="icon"
+          ><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e8eaed"
+          >
+            <path
+              d="M740-208v-112h-40v128l86 86 28-28-74-74ZM480-800 243-663l237 137 237-137-237-137ZM120-321v-318q0-22 10.5-40t29.5-29l280-161q10-5 19.5-8t20.5-3q11 0 21 3t19 8l280 161q19 11 29.5 29t10.5 40v159h-80v-116L479-434 200-596v274l240 139v92L160-252q-19-11-29.5-29T120-321ZM720 0q-83 0-141.5-58.5T520-200q0-83 58.5-141.5T720-400q83 0 141.5 58.5T920-200q0 83-58.5 141.5T720 0ZM480-491Z"
+            /></svg
+        ></span>
+        <span class="value" id="server-uptime">00:00:00</span>
+      </div>
+      <div class="block">
+        <span class="icon">
+          <svg  xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path d="M160-240v-80h260L80-660l56-56 344 343 208-208q-4-9-6-18.5t-2-20.5q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29q-9 0-17.5-1.5T746-526L540-320h260v80H160Z"/>
+          </svg>
+        </span>
+        <span class="value" id="server-ping">20.0</span>
+      </div>
+      <div class="block">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z">
+          </svg>
+        </span> 
+        <span class="value disabled" id="server-ip">127.0.0.1</span>
+      </div>
+      <div class="block">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z">
+          </svg>
+        </span>
+        <span class="value" id="server-name">Server-Name</span>
+      </div>
 
-        <div class="line">
-            <div class="title">IP</div>
-            <div class="value" id="server-ip"></div>
-        </div>
-
-        <div class="line">
-          <div class="title">UPTIME</div>
-          <div class="value" id="server-uptime"></div>
-      </div>
-      </div>
-      <div class="database">
-        <div class="folders">
-          <div class="title">DataServerMain</div>
-          <div class="data-storage">2GB</div>
-        </div>
-      </div>
     </div>
-    <div class="rest" id="rest">
-        Select a database from the sidebar
-    </div>
+    <div id="server-files"></div>
     <script>
+      const ip = "http://192.168.68.104:5000";
+
       function getData(endpoint) {
-        return fetch(`http://192.168.68.110/${endpoint}`)
+        return fetch(`${ip}/${endpoint}`)
           .then((res) => res.text())
           .catch((error) => {
             console.error(error);
           });
       }
-      const temperatureEle = document.getElementById("server-temperature");
-      const storageEle = document.getElementById("server-storage");
-      const cpuEle = document.getElementById("server-cpu");
-      const ramEle = document.getElementById("server-ram");
-      const titleEle = document.getElementById("server-name");
-      const pingEle = document.getElementById("server-ping");
-      const ipEle = document.getElementById("server-ip"); 
-      const sidebar = document.getElementById("sidebar");
-      const rest = document.getElementById("rest");
-      const uptimeEle = document.getElementById("server-uptime");
+      
+      const serverRefresh = document.getElementById("refresh");
+      const uiSidebarToggle = document.getElementById("sidebar-toggle");
+      const uiSidebar = document.getElementById("sidebar");
+      const uiServerFiles = document.getElementById("server-files")
+      let tmpSidebarHTML;
+      let sidebarState = 1; // 0 off, 1 on 
 
+      uiSidebar.addEventListener("click",()=>{
+        if(sidebarState==1){
+        tmpSidebarHTML = sidebar.innerHTML;
+        sidebarState=0;
+        sidebar.innerHTML = `
+        <div class="block-small">
+          <span id="sidebar-toggle" class="icon icon-button">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm540-453h100v-107H700v107Zm0 186h100v-106H700v106ZM160-240h460v-480H160v480Zm540 0h100v-107H700v107Z"/></svg>
+          </span>
+        </div>
+        `} else { 
+          sidebar.innerHTML = tmpSidebarHTML;
+          sidebarState=1;
+        }
+      }) 
+
+      serverRefresh.addEventListener("click",()=>{location.reload()})
       function formatSeconds(seconds) {
-          var hours = Math.floor(seconds / 3600);
-          var minutes = Math.floor((seconds % 3600) / 60);
-          var remainingSeconds = seconds % 60;
-          hours = String(hours).padStart(2, '0');
-          minutes = String(minutes).padStart(2, '0');
-          remainingSeconds = String(remainingSeconds).padStart(2, '0');
-          return hours + ":" + minutes + ":" + Math.floor(remainingSeconds);
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+        var remainingSeconds = seconds % 60;
+        hours = String(hours).padStart(2, "0");
+        minutes = String(minutes).padStart(2, "0");
+        remainingSeconds = String(remainingSeconds).padStart(2, "0");
+        return hours + ":" + minutes + ":" + Math.floor(remainingSeconds);
       }
-
-
+      uiSidebarToggle.click()
+      function formatNumber(num) {
+        // Split the number into its integer and decimal parts
+        let [integerPart, decimalPart] = num.toString().split('.');
+        
+        // Pad the integer part with leading zeros if it's less than two digits
+        let formattedInteger = integerPart.padStart(2, '0');
+        
+        // Ensure the decimal part is one digit
+        let formattedDecimal = decimalPart ? decimalPart[0] : '0';
+        
+        // Combine and return the formatted number
+        return `${formattedInteger}.${formattedDecimal}`;
+    }
+    function cend(string,array=[]){ 
+      for(let arg of array){ 
+        if(string.endsWith(arg)){ 
+          return true;
+        }
+      }
+      return false;
+    }
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        const newEle = entry.target;
+    
+        if (entry.isIntersecting) {
+          // When the element is on-screen, re-add it and set the src
+          if (!newEle.isConnected) {
+            uiServerFiles.append(newEle); // Re-add element if it was removed
+          }
+          const originalSrc = newEle.dataset.src; // Get the original image src
+          if (newEle.tagName === "IMG") {
+            resizeImage(originalSrc, newEle); // Resize the image
+          } else {
+            newEle.src = originalSrc; // Load the actual src for videos
+          } 
+        }
+      });
+    }, { root: null, threshold: 0.1 }); // Trigger when 10% of the element is visible
+    
+    // Function to resize the image based on screen size
+    async function resizeImage(originalSrc, imgElement) {
+      const img = new Image();
+      img.src = originalSrc;
+      await img.decode(); // Wait for the image to Load
+    
+      // Get screen dimensions
+      const maxWidth = window.innerWidth; // Limit width to screen size
+      const aspectRatio = img.height / img.width; // Maintain aspect ratio
+    
+      // Calculate new dimensions
+      let newWidth = maxWidth;
+      let newHeight = newWidth * aspectRatio;
+    
+      // Create a canvas to resize the image
+      const canvas = document.createElement("canvas");
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+    
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, newWidth, newHeight); // Draw the resized image
+    
+      // Set the src of the img element to the data URL of the canvas
+      imgElement.src = canvas.toDataURL("image/jpeg", 0.8); // Set quality (0.7 for 70%)
+    }(async ()=>{
+      let files = JSON.parse(await getData("files"));
+      for(let file of files){ 
+        let newEle
+        if(cend(file,["png","webp","jpg","jpeg","gif"])){
+        newEle = document.createElement("img");
+      } else if(cend(file,["mp4","webm","avi"])){ 
+        newEle = document.createElement("video")
+        newEle.controls = "controls";
+      }
+      newEle.addEventListener("click",()=>{location.href=`${ip}${file}`})
+      newEle.dataset.src = `${ip}${file}`;
+      uiServerFiles.append(newEle);
+      observer.observe(newEle);
+      }
+    })()
       setInterval(() => {
+        if(sidebarState==1){
+      const serverCPU = document.getElementById("server-cpu");
+      const serverRAM = document.getElementById("server-ram");
+      const serverName = document.getElementById("server-name");
+      const serverPing = document.getElementById("server-ping");
+      const serverIP = document.getElementById("server-ip");
+      const serverUptime = document.getElementById("server-uptime");
         (async () => {
-          let temp = await getData("temp");
-          temperatureEle.style.cssText = `--dial-percent:${temp}%;`;
-          temperatureEle.innerText = temp;
-        })();
-        (async () => {
-          let temp = await getData("info_name");
-          titleEle.innerText = temp;
-        })();
-        (async () => {
-          titleEle.title = await getData("info_ip");
-        })();
-        (async () => {
-          let temp = await getData("cpu");
-          cpuEle.style.cssText = `--dial-percent:${temp}%`;
-          cpuEle.innerText = temp;
-        })();
-        (async () => {
-          let temp = await getData("storage");
-          storageEle.style.cssText = `--dial-percent:${temp}%`;
-          storageEle.innerText = temp;
-        })();
-        (async () => {
-          let temp = await getData("ram");
-          ramEle.style.cssText = `--dial-percent:${temp}%`;
-          ramEle.innerText = temp;
-        })();
-        (async () => {
-          let temp = await getData("ping"); 
-          pingEle.innerText = temp;
-        })();
-        (async () => {
-          let temp = await getData("uptime"); 
-          temp = Number(temp);
-          temp = formatSeconds(temp)
-          uptimeEle.innerText = temp
-        })();
-        (async () => {
-          let temp = await getData("info_ip");
-          ipEle.innerHTML = temp;
-        })();
+
+        
+          let packet = JSON.parse(await getData("info_packet"));
+          // set the prams
+          serverCPU.innerText = formatNumber(packet["cpu"])
+          serverRAM.innerText = formatNumber(packet["ram"]);
+          serverName.innerText = packet["hostname"];
+          serverPing.innerText = formatNumber(packet["ping"]);
+          serverIP.innerText = packet["ip"];
+          serverUptime.innerText = formatSeconds(packet["uptime"]);
+        })();}
       }, 1000);
-      (async () => {
-          let temp = JSON.parse(await getData("files"))
-        })();
-      setTimeout(()=>{
-        rest.style.minWidth = "85vw";
-        setTimeout(()=>{
-            rest.style.transition = "all 0s ease";
-        },1000)
-      },1000)
+      // time to render the actual files
     </script>
   </body>
 </html>
