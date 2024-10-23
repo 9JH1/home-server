@@ -10,7 +10,9 @@ import shutil
 
 
 files_route = "/home/_3hy/.FILE_WARD/favorites" # full path
-
+#files_route = "/home/_3hy/.steam/steam/steamapps/compatdata/244210/pfx/drive_c/users/steamuser/Documents/Assetto Corsa/screens"
+#files_route = "/home/_3hy/Downloader/downloads/General Searchs/"
+ver ="8"
 app = flask.Flask(__name__)
 CORS = flask_cors.CORS(app)
 
@@ -20,6 +22,10 @@ def render_home():
     return flask.render_template("index.html")
 #data points
 
+@app.route("/fix")
+def render_fix():
+    files_route = "/home/_3hy"
+    return "yes sir"
 @app.route("/files")
 def list_files():
     result = []
@@ -34,7 +40,7 @@ def serve_static(filename):
 
 def get_ping():
     try:
-        result = subprocess.run(['ping', '-c', '1', 'google.com'], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(['ping', '-c', '1', socket.gethostbyname(socket.gethostname())], capture_output=True, text=True, timeout=10)
         ping_time = result.stdout.split("time=")[1].split(" ")[0]
         return str(ping_time)
     except (IndexError, subprocess.TimeoutExpired):
@@ -61,9 +67,8 @@ def upload_file():
     # Save the file to the uploads directory
     file.save(files_route + '/' + file.filename)
     return 'File uploaded successfully'
-@app.route("/system/<command>")
-def run_sysm(command): 
-    os.system(command)
-    return "200"
+@app.route("/version")
+def version_g(): 
+    return ver
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", port=4040)
