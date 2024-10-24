@@ -1,3 +1,4 @@
+ver = "8"
 import flask
 import subprocess 
 import os
@@ -7,14 +8,26 @@ import time
 import math
 import psutil
 import shutil
-
-
-files_route = "/home/_3hy/.FILE_WARD/favorites" # full path
+import requests
+files_route = "/home/_3hy/Pictures/" # full path
 #files_route = "/home/_3hy/.steam/steam/steamapps/compatdata/244210/pfx/drive_c/users/steamuser/Documents/Assetto Corsa/screens"
 #files_route = "/home/_3hy/Downloader/downloads/General Searchs/"
-ver ="8"
 app = flask.Flask(__name__)
 CORS = flask_cors.CORS(app)
+
+@app.route("/latest_version_update_check")
+def fetch_first_line():
+    url = "https://raw.githubusercontent.com/9jh1/home-server/refs/heads/main/server.py"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an error for bad responses
+        first_line = response.text.splitlines()[0]  # Get the first line
+
+
+        return first_line.split("=")[1]
+    except requests.RequestException as e:
+        print(f"Error fetching the URL: {e}")
+        return None
 
 # ROUTES
 @app.route("/") 
@@ -22,10 +35,6 @@ def render_home():
     return flask.render_template("index.html")
 #data points
 
-@app.route("/fix")
-def render_fix():
-    files_route = "/home/_3hy"
-    return "yes sir"
 @app.route("/files")
 def list_files():
     result = []
@@ -45,6 +54,70 @@ def get_ping():
         return str(ping_time)
     except (IndexError, subprocess.TimeoutExpired):
         return None
+@app.route("/query_database_files/<index>")
+def query_database_files(index):
+    folder_info = []
+    result = []
+    # Check if the provided path exists and is a directory
+    if os.path.exists(files_route) and os.path.isdir(files_route):
+        for folder_name in os.listdir(files_route):
+            folder_path = os.path.join(files_route, folder_name)
+            
+            # Check if it is a directory
+            if os.path.isdir(folder_path):
+                folder_size = get_folder_size(folder_path)
+                folder_info.append({
+                    "name": folder_name,
+                    "size": folder_size,
+                    "path": folder_path
+                })
+    path = folder_info[int(index)]["path"];
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            result.append(os.path.join(root, file).replace(files_route,""))
+    return flask.jsonify(result)  # Use jsonify to return a list of full file paths
+
+@app.route("/database")
+def get_folder_info():
+    folder_info = []
+    
+    # Check if the provided path exists and is a directory
+    if os.path.exists(files_route) and os.path.isdir(files_route):
+        for folder_name in os.listdir(files_route):
+            folder_path = os.path.join(files_route, folder_name)
+            
+            # Check if it is a directory
+            if os.path.isdir(folder_path):
+                folder_size = get_folder_size(folder_path)
+                folder_info.append({
+                    "name": folder_name,
+                    "size": folder_size,
+                    "path": folder_path
+                })
+    
+    return flask.jsonify(folder_info)
+
+def get_folder_size(folder_path):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(folder_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            total_size += os.path.getsize(fp)
+    
+    return format_size(total_size)
+
+def format_size(size_bytes):
+    """Convert bytes to a human-readable format."""
+    if size_bytes == 0:
+        return "0B"
+    
+    size_names = ["B", "KB", "MB", "GB", "TB"]
+    index = 0
+    while size_bytes >= 1024 and index < len(size_names) - 1:
+        size_bytes /= 1024.0
+        index += 1
+    
+    return f"{size_bytes:.2f} {size_names[index]}"
 
 @app.route("/info_packet")
 def info_packet():

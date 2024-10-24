@@ -1,549 +1,629 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Server</title>
-    <style>
-      * {
-        font-family: "Hack";
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Server</title>
+  <style>
+    * {
+      font-family: "Hack";
+    }
+
+    body {
+      background-color: var(--background);
+      padding: 0;
+      margin: 0;
+    }
+
+    :root {
+      --background: #000000;
+      --foreground: #ffffff;
+      --surface_background: #353535;
+      --surface_foreground: #505050;
+      --accent: rgb(105, 60, 105);
+    }
+
+    .sidebar {
+      user-select: none;
+      position: fixed;
+      overflow-y: auto;
+      top: 0;
+      height: 100%;
+      background-color: var(--background);
+      border-right: solid rgb(255, 255, 255) 1px;
+      color: var(--foreground);
+      padding: 10px;
+
+      .ffc {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
 
-      body {
-        background-color: var(--background);
-        padding: 0;
-        margin: 0;
-      }
+      .profile {
+        margin-bottom: 20px;
+        height: 40px;
+        width: 100%;
+        display: flex;
 
-      :root {
-        --background: #000000;
-        --foreground: #ffffff;
-        --surface_background: #353535;
-        --surface_foreground: #505050;
-        --accent: rgb(105, 60, 105);
-      }
-      .sidebar {
-        position: fixed;
-        top: 0;
-        height: 100%;
-        background-color: var(--background);
-        border-right: solid rgb(255, 255, 255) 1px;
-        color: var(--foreground);
-        padding: 10px;
-        .profile {
-          margin-bottom: 1vh;
-          height: 5vh;
-          width: 100%;
+        .icon {
+          height: 40px;
+          width: 40px;
+          background-color: var(--foreground);
+          border: solid 3px var(--accent);
+          box-sizing: border-box;
+          border-radius: 10px;
+          font-size: 0.7em;
+          background-image: url("https://lh3.googleusercontent.com/a-/ALV-UjWkE6ZWys-__NCa_11UvJTOs7Ez7gDW2M_w1Kfj0K6WoQVXmsEwhXAnnJfzJdtOI6IauYZw6ssryS35fvzddez6Xl-zyHjHqG2GipRJnengrlBvUBCcE9lx05RbcBiBMYekGXhH6tVa3sacnbsfEJLAUgxVMGeWbe_kvH3WQumxvxBoOqFJ_UDTaqN2CgD7zC9rzyAwajnldydrIdHnFl0Er9yuVRpvj7l61zzajx-kY2hcvicBF03u1YYLUv2_OaVGKMsem1wCfNMDc513cm1RjaiYiJAaPL5DJDG6oCBbKXMZKExKPqi5zPhCbeh8s5b-8oke4GwkzqzO-Q8T-XLdnesNinqbs3jQuhznXA2nXuooY0oQMYjg7L_Q5PKVu7bhntxdB5wzjGwcG8zI6F-5UkCeKvI_F_O7gAiiCYaLRWFFB0W0IGYperU_lHuh93tvpfFEEJWFyHB7Z-Ws2pWVXZX3uwAZA0n9XeyyIt5GzoDQ1lK1opugMixz8tfRHJtTj72ko7SIC-PPvxoLvK5ecoZHyHZAVwA6FmfDNrUohEq2b6sDPOnMeogX7kE3a3WDrb6EQwxlXJKgxtpWHoW0i5KeYZByfuzQ_J6Ppt1EGAO81qqNUWAUx44HhIFXX3w_rpM2XJZ67yFC6qpGSgM5uDHk34ZFImwvLZl80gWE4C3OmeCybo3rrBT37xRl7CKYbl7FtEmgk2SKs3oqhsu9j1n5KevabNGnpHtxDjzBL_z-o8iUoel9_BaD25F6GcF3B06pLIZYqtSyO-JtBaekmbj3rHo6jT7NnmXdXmVkDyfK97ZhDPqYIA7b235gbMHKC9y3-i0c-a_yXFu7hSXpUB2cJkSXmHh_3BzYMRlVqEo9Cuf1nO-ytx9GrdNuiBAvqRiwiMbf9W5j5r--TcWNNQTNWairwHl2Y3oReHRlK0_skCSl6cGzWKRbR1uxlHD_IojBrkk5jojqUdWAtGO20w=s96-c-rg-br100");
+          background-position: center;
+          background-size: contain;
+          color: transparent;
+        }
+
+        .rest {
           display: flex;
-          .icon {
-            height: 5vh;
-            width: 5vh;
-            background-color: var(--foreground);
-            border: solid 4px var(--accent);
-            box-sizing: border-box;
-            border-radius: 10px;
-            font-size: 0.7em;
-            background-image: url("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e3b1f8f6-6717-46ec-a5b0-375221def295/dgv8fud-da0fe941-9324-4b1b-8e0f-6827bc93e57a.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2UzYjFmOGY2LTY3MTctNDZlYy1hNWIwLTM3NTIyMWRlZjI5NVwvZGd2OGZ1ZC1kYTBmZTk0MS05MzI0LTRiMWItOGUwZi02ODI3YmM5M2U1N2EucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.MwSeUDbT6vBMwblsdryn74MmZ6juWeDvVwFkiGYV6ds");
-            background-position: center;
-            background-size: contain;
-            color: transparent;
+          align-items: center;
+          flex-wrap: wrap;
+          padding-left: 20px;
+          box-sizing: border-box;
+
+          .title,
+          .subheader {
+            width: 100%;
+            display: flex;
+            font-weight: bold;
           }
+
+          .title {
+            align-items: end;
+            color: var(--foreground);
+          }
+
+          .subheader {
+            align-items: start;
+            color: var(--surface_foreground);
+            font-size: 0.8em;
+          }
+        }
+
+        #sidebar-toggle {
+          width: 30px;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+
+      .cat {
+        width: 100%;
+        margin-bottom: 10px;
+        margin-top: 10px;
+
+        .title {
+          font-weight: bold;
+          width: 100%;
+          left: 0;
+          font-size: 0.8em;
+          color: var(--surface_foreground);
+          text-transform: uppercase;
+          margin-bottom: 8px;
+        }
+
+        .cat-item {
+          width: 100%;
+          height: 30px;
+          margin-bottom: 5px;
+          display: flex;
+          overflow: hidden;
+
+          .cat-item-drop,
+          .cat-item-icon {
+            min-width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .cat-item-drop {
+            min-width: 20px;
+            cursor: pointer;
+          }
+
           .rest {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
-            padding-left: 5px;
-            box-sizing: border-box;
-            .title,
-            .subheader {
-              width: 100%;
-              display: flex;
+            justify-content: space-between;
+
+            .value {
+              color: var(--surface_foreground);
+              margin-left: 20px;
               font-weight: bold;
             }
-            .title {
-              align-items: end;
-              color: var(--foreground);
-            }
-            .subheader {
-              align-items: start;
-              color: var(--surface_foreground);
-              font-size: 0.8em;
-            }
           }
-          #sidebar-toggle {
-            width: 3vh;
-            height: 100%;
-            display: flex;
+
+          .rest-cent {
             justify-content: center;
-            align-items: center;
           }
         }
-        .cat {
-          width: 100%;
-          margin-bottom: 2vh;
-          margin-top: 1vh;
-          .title {
-            font-weight: bold;
-            width: 100%;
-            left: 0;
-            font-size: 0.8em;
-            color: var(--surface_foreground);
-            text-transform: uppercase;
-            margin-bottom: 0.8vh;
-          }
-          .cat-item {
-            width: 100%;
-            height: 4vh;
-            margin-bottom: 1vh;
-            display: flex;
-            overflow: hidden;
-            .cat-item-drop,
-            .cat-item-icon {
-              min-width: 4vh;
-              height: 4vh;
-              margin-right: 5px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-            .cat-item-drop {
-              min-width: 3vh;
-              background-color: orange;
-            }
-            .rest {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              .value {
-                color: var(--surface_foreground);
-                margin-left: 2vh;
-                font-weight: bold;
-              }
-            }
-          }
-        }
+
       }
-      .rest {
-        width: 100%;
-        height: 100%;
+
+      .active-select {
+        background: var(--surface_background);
       }
+    }
+
+    .pps {
+      cursor: pointer;
+    }
+
+    .rest {
+      width: 100%;
+      height: 100%;
+    }
+
+    .seperator {
+      width: 100%;
+      height: 1px;
+      background-color: var(--surface_background);
+    }
+
+    .disabled {
+      opacity: 0.5;
+      user-select: none;
+    }
+
+    .sidebar-hide {
+      width: fit-content;
+      height: fit-content;
+      background-color: transparent;
+      border-right: none;
+      padding: 0px;
+      margin: 0px;
+
+      .cat,
       .seperator {
+        display: none;
+      }
+
+      .profile {
+        margin-bottom: 0px;
+
+        .icon {
+          display: none;
+        }
+
+        .rest {
+          display: none;
+
+          * {
+            display: none;
+          }
+        }
+      }
+
+      #sidebar-toggle {
+        rotate: 180deg;
+        min-width: 30px;
+        min-height: 40px;
+      }
+    }
+
+    #server-files {
+      * {
         width: 100%;
-        height: 1px;
-        background-color: var(--surface_background);
       }
-      .disabled {
-        opacity: 0.5;
-        user-select: none;
-      }
-    </style>
-  </head>
+    }
+  </style>
+</head>
 
-  <body>
-    <div class="sidebar">
-      <div class="profile">
-        <div class="icon">profile goes here</div>
+<body>
+  <div class="sidebar sidebar-hide" id="sidebar">
+    <div class="profile">
+      <div class="icon">profile goes here</div>
+      <div class="rest">
+        <div class="title ffc">Home Server</div>
+        <div class="subheader">By 3hy</div>
+      </div>
+      <div id="sidebar-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+          <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
+        </svg>
+      </div>
+    </div>
+    <div class="seperator"></div>
+    <div class="cat">
+      <div class="title ffc">Host Info</div>
+      <div class="cat-item">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M144.22-227.09v-91h263.82L59.67-666.7l63.66-63.65L480-374.91l210.87-210.87q-3.76-9.24-5.64-18.74-1.88-9.5-1.88-20.5 0-45.11 31.27-76.5T791-732.91q45.11 0 76.38 31.39 31.27 31.39 31.27 76.5t-31.27 76.38q-31.27 31.27-76.38 31.27-9 0-17.62-1.5-8.62-1.5-16.62-4.26l-204.8 205.04h263.82v91H144.22Z" />
+          </svg>
+        </div>
         <div class="rest">
-          <div class="title">Home Server</div>
-          <div class="subheader">By 3hy</div>
-        </div>
-        <div id="sidebar-toggle"><</div>
-      </div>
-      <div class="seperator"></div>
-      <div class="cat">
-        <div class="title">Host Info</div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M144.22-227.09v-91h263.82L59.67-666.7l63.66-63.65L480-374.91l210.87-210.87q-3.76-9.24-5.64-18.74-1.88-9.5-1.88-20.5 0-45.11 31.27-76.5T791-732.91q45.11 0 76.38 31.39 31.27 31.39 31.27 76.5t-31.27 76.38q-31.27 31.27-76.38 31.27-9 0-17.62-1.5-8.62-1.5-16.62-4.26l-204.8 205.04h263.82v91H144.22Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">Ping</span>
-            <span class="value">20.0</span>
-          </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M480.24-71.87q-84.65 0-159.1-32.1-74.44-32.1-129.64-87.29-55.2-55.2-87.29-129.65-32.1-74.46-32.1-159.11 0-84.65 32.1-159.09 32.09-74.43 87.29-129.63 55.2-55.19 129.65-87.29 74.46-32.1 159.11-32.1 84.65 0 158.97 32.1 74.31 32.1 129.51 87.29 55.19 55.2 87.29 129.65 32.1 74.46 32.1 159.11 0 84.65-32.1 159.09-32.1 74.43-87.29 129.63-55.2 55.19-129.57 87.29-74.37 32.1-158.93 32.1Zm-39.76-93v-77.76q-32.76 0-56.03-23.27-23.26-23.26-23.26-55.93v-39.6L171.11-551.52q-3 17.76-5.5 35.52t-2.5 35.63q0 120.1 78.78 210.42t198.59 105.08Zm273.61-101.04q20-21.76 35.64-47.02 15.64-25.27 26.14-52.65t15.88-56.22q5.38-28.84 5.38-58.68 0-97.01-53.78-177.19-53.78-80.18-144.07-115.7v15.52q0 32.71-23.5 56-23.5 23.28-56.15 23.28h-79.15v79.22q0 16.83-11.5 28.33t-28.33 11.5h-79.22v79.04h237.99q16.86 0 28.36 11.5t11.5 28.32v118.75h39.29q26 0 46.79 15.5 20.8 15.5 28.73 40.5Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">IPV4</span>
-            <span class="value">192.168.68.104</span>
-          </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M162.87-111.87q-37.78 0-64.39-26.61t-26.61-64.39v-554.26q0-37.78 26.61-64.39t64.39-26.61h190.91q37.79 0 64.39 26.61 26.61 26.61 26.61 64.39v554.26q0 37.78-26.61 64.39-26.6 26.61-64.39 26.61H162.87Zm443.35 0q-37.79 0-64.39-26.61-26.61-26.61-26.61-64.39v-554.26q0-37.78 26.61-64.39 26.6-26.61 64.39-26.61h190.91q37.78 0 64.39 26.61t26.61 64.39v554.26q0 37.78-26.61 64.39t-64.39 26.61H606.22Zm-445.74-88.61h195.69v-559.04H160.48v559.04Zm443.35 0h195.69v-559.04H603.83v559.04ZM200.48-345.65h115.69v-86.22H200.48v86.22Zm443.35 0h115.69v-86.22H643.83v86.22ZM200.48-471.87h115.69v-86.22H200.48v86.22Zm443.35 0h115.69v-86.22H643.83v86.22ZM200.48-598.09h115.69v-86.21H200.48v86.21Zm443.35 0h115.69v-86.21H643.83v86.21ZM160.48-200.48h195.69-195.69Zm443.35 0h195.69-195.69Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">Server Name</span>
-            <span class="value">ArchyLynx</span>
-          </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M360-360v-240h240v240H360Zm80-80h80v-80h-80v80Zm-85.5 331.72v-83.59h-71.63q-37.78 0-64.39-26.61t-26.61-64.39v-71.63h-83.59v-83.67h83.59v-83.66h-83.59v-83.67h83.59v-71.63q0-37.78 26.61-64.39t64.39-26.61h71.63v-83.59h83.67v83.59h83.66v-83.59h83.67v83.59h71.63q37.78 0 64.39 26.61t26.61 64.39v71.63h83.59v83.67h-83.59v83.66h83.59v83.67h-83.59v71.63q0 37.78-26.61 64.39t-64.39 26.61H605.5v83.59h-83.67v-83.59h-83.66v83.59H354.5Zm322.63-174.59v-394.26H282.87v394.26h394.26ZM480-480Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">CPU</span>
-            <span class="value">20.0</span>
-          </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M234.5-354.5h91v-251h-91v251Zm200 0h91v-251h-91v251Zm200 0h91v-251h-91v251Zm-471.63 71.63h634.26v-394.26H162.87v394.26Zm0 0v-394.26 394.26Zm31.63 182v-91h-31.63q-37.78 0-64.39-26.61t-26.61-64.39v-394.26q0-37.78 26.61-64.39t64.39-26.61h31.63v-91h91v91h149v-91h91v91h149v-91h91v91h31.63q37.78 0 64.39 26.61t26.61 64.39v394.26q0 37.78-26.61 64.39t-64.39 26.61H765.5v91h-91v-91h-149v91h-91v-91h-149v91h-91Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">RAM</span>
-            <span class="value">20.0</span>
-          </div>
-        </div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M322.87-162.87h314.26V-280q0-65.04-46.04-111.09-46.05-46.04-111.09-46.04t-111.09 46.04Q322.87-345.04 322.87-280v117.13Zm-171 91v-91h80V-280q0-60.04 27.18-113.3 27.19-53.27 76.04-86.7-48.85-33.43-76.04-86.7-27.18-53.26-27.18-113.3v-117.13h-80v-91h656.26v91h-80V-680q0 60.04-27.06 113.3Q674-513.43 624.91-480q49.09 33.43 76.16 86.7 27.06 53.26 27.06 113.3v117.13h80v91H151.87Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">uptime</span>
-            <span class="value">20:20:20</span>
-          </div>
+          <span class="key">Ping</span>
+          <span class="value" id="server-ping">20.0</span>
         </div>
       </div>
-      <div class="cat">
-        <div class="title">Databases</div>
-        <div class="cat-item dropdown-active">
-          <div class="cat-item-drop"></div>
-
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M300-729.57q-25 0-42.5 17.5t-17.5 42.5q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5t-42.5-17.5Zm0 416.27q-25 0-42.5 17.5T240-253.3q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5T300-313.3ZM157.37-857.7h645.26q19.34 0 32.42 13.3 13.08 13.29 13.08 32.68v283.35q0 19.95-13.08 33.44-13.08 13.5-32.42 13.5H157.37q-19.34 0-32.42-13.5-13.08-13.49-13.08-33.44v-283.35q0-19.39 13.08-32.68 13.08-13.3 32.42-13.3Zm45.5 91v194.26h554.26V-766.7H202.87Zm-45.5 325.27h645.26q19.34 0 32.42 13.49 13.08 13.49 13.08 33.44v283.35q0 19.44-13.08 32.59-13.08 13.15-32.42 13.15H157.37q-19.34 0-32.42-13.15-13.08-13.15-13.08-32.59V-394.5q0-19.95 13.08-33.44 13.08-13.49 32.42-13.49Zm45.5 91v194.02h554.26v-194.02H202.87Zm0-416.27v194.26-194.26Zm0 416.27v194.02-194.02Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">Server1</span>
-            <span class="value">20GB</span>
-          </div>
+      <div class="cat-item">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M480.24-71.87q-84.65 0-159.1-32.1-74.44-32.1-129.64-87.29-55.2-55.2-87.29-129.65-32.1-74.46-32.1-159.11 0-84.65 32.1-159.09 32.09-74.43 87.29-129.63 55.2-55.19 129.65-87.29 74.46-32.1 159.11-32.1 84.65 0 158.97 32.1 74.31 32.1 129.51 87.29 55.19 55.2 87.29 129.65 32.1 74.46 32.1 159.11 0 84.65-32.1 159.09-32.1 74.43-87.29 129.63-55.2 55.19-129.57 87.29-74.37 32.1-158.93 32.1Zm-39.76-93v-77.76q-32.76 0-56.03-23.27-23.26-23.26-23.26-55.93v-39.6L171.11-551.52q-3 17.76-5.5 35.52t-2.5 35.63q0 120.1 78.78 210.42t198.59 105.08Zm273.61-101.04q20-21.76 35.64-47.02 15.64-25.27 26.14-52.65t15.88-56.22q5.38-28.84 5.38-58.68 0-97.01-53.78-177.19-53.78-80.18-144.07-115.7v15.52q0 32.71-23.5 56-23.5 23.28-56.15 23.28h-79.15v79.22q0 16.83-11.5 28.33t-28.33 11.5h-79.22v79.04h237.99q16.86 0 28.36 11.5t11.5 28.32v118.75h39.29q26 0 46.79 15.5 20.8 15.5 28.73 40.5Z" />
+          </svg>
         </div>
-        <div class="cat-item dropdown-active">
-          <div class="cat-item-drop"></div>
-
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M300-729.57q-25 0-42.5 17.5t-17.5 42.5q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5t-42.5-17.5Zm0 416.27q-25 0-42.5 17.5T240-253.3q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5T300-313.3ZM157.37-857.7h645.26q19.34 0 32.42 13.3 13.08 13.29 13.08 32.68v283.35q0 19.95-13.08 33.44-13.08 13.5-32.42 13.5H157.37q-19.34 0-32.42-13.5-13.08-13.49-13.08-33.44v-283.35q0-19.39 13.08-32.68 13.08-13.3 32.42-13.3Zm45.5 91v194.26h554.26V-766.7H202.87Zm-45.5 325.27h645.26q19.34 0 32.42 13.49 13.08 13.49 13.08 33.44v283.35q0 19.44-13.08 32.59-13.08 13.15-32.42 13.15H157.37q-19.34 0-32.42-13.15-13.08-13.15-13.08-32.59V-394.5q0-19.95 13.08-33.44 13.08-13.49 32.42-13.49Zm45.5 91v194.02h554.26v-194.02H202.87Zm0-416.27v194.26-194.26Zm0 416.27v194.02-194.02Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">Server2</span>
-            <span class="value">1GB</span>
-          </div>
-        </div>
-        <div class="cat-item dropdown-active">
-          <div class="cat-item-drop"></div>
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M300-729.57q-25 0-42.5 17.5t-17.5 42.5q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5t-42.5-17.5Zm0 416.27q-25 0-42.5 17.5T240-253.3q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5T300-313.3ZM157.37-857.7h645.26q19.34 0 32.42 13.3 13.08 13.29 13.08 32.68v283.35q0 19.95-13.08 33.44-13.08 13.5-32.42 13.5H157.37q-19.34 0-32.42-13.5-13.08-13.49-13.08-33.44v-283.35q0-19.39 13.08-32.68 13.08-13.3 32.42-13.3Zm45.5 91v194.26h554.26V-766.7H202.87Zm-45.5 325.27h645.26q19.34 0 32.42 13.49 13.08 13.49 13.08 33.44v283.35q0 19.44-13.08 32.59-13.08 13.15-32.42 13.15H157.37q-19.34 0-32.42-13.15-13.08-13.15-13.08-32.59V-394.5q0-19.95 13.08-33.44 13.08-13.49 32.42-13.49Zm45.5 91v194.02h554.26v-194.02H202.87Zm0-416.27v194.26-194.26Zm0 416.27v194.02-194.02Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">testserver</span>
-            <span class="value">163KB</span>
-          </div>
+        <div class="rest">
+          <span class="key">IPV4</span>
+          <span class="value" id="server-ip">192.168.68.104</span>
         </div>
       </div>
-      <div class="cat">
-        <div class="title">actions</div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M480-71.87q-84.91 0-159.34-32.12-74.44-32.12-129.5-87.17-55.05-55.06-87.17-129.5Q71.87-395.09 71.87-480q0-85.75 31.98-159.77 31.98-74.01 87.17-129.21l64.13 63.89q-43.52 43.52-67.9 101.09-24.38 57.56-24.38 124.05 0 132.99 92.04 225.04 92.05 92.04 225.09 92.04 133.04 0 225.09-92.04 92.04-92.05 92.04-225.04 0-66.49-24.26-124.05-24.26-57.57-67.78-101.09l63.89-63.89q55.19 55.2 87.17 129.21 31.98 74.02 31.98 159.77 0 84.91-32.12 159.34-32.12 74.44-87.17 129.5-55.06 55.05-129.5 87.17Q564.91-71.87 480-71.87ZM434.5-434.5v-453.63h91v453.63h-91Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">Shutdown</span>
-          </div>
+      <div class="cat-item">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M162.87-111.87q-37.78 0-64.39-26.61t-26.61-64.39v-554.26q0-37.78 26.61-64.39t64.39-26.61h190.91q37.79 0 64.39 26.61 26.61 26.61 26.61 64.39v554.26q0 37.78-26.61 64.39-26.6 26.61-64.39 26.61H162.87Zm443.35 0q-37.79 0-64.39-26.61-26.61-26.61-26.61-64.39v-554.26q0-37.78 26.61-64.39 26.6-26.61 64.39-26.61h190.91q37.78 0 64.39 26.61t26.61 64.39v554.26q0 37.78-26.61 64.39t-64.39 26.61H606.22Zm-445.74-88.61h195.69v-559.04H160.48v559.04Zm443.35 0h195.69v-559.04H603.83v559.04ZM200.48-345.65h115.69v-86.22H200.48v86.22Zm443.35 0h115.69v-86.22H643.83v86.22ZM200.48-471.87h115.69v-86.22H200.48v86.22Zm443.35 0h115.69v-86.22H643.83v86.22ZM200.48-598.09h115.69v-86.21H200.48v86.21Zm443.35 0h115.69v-86.21H643.83v86.21ZM160.48-200.48h195.69-195.69Zm443.35 0h195.69-195.69Z" />
+          </svg>
         </div>
-        <div class="cat-item">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M440-113.63q-124.11-15.48-206.12-108.01t-82.01-217.88q0-66.72 26-127.94 26-61.21 74-107.65l64.89 64.65q-36.33 33.53-55.11 77.45t-18.78 93.49q0 87.04 55.28 153.47 55.28 66.42 141.85 81.18v91.24Zm80 0v-91.24q85.8-15.52 141.47-81.68 55.66-66.17 55.66-152.97 0-97.37-67.49-166.18-67.49-68.8-164.62-70.71h-3.95l45.43 45.43-58.63 58.63-151.24-151.24 151.24-151.48 58.63 58.63-48.78 48.79h4.19q136.63 0 231.43 95.63 94.79 95.63 94.79 232.5 0 124.35-82.01 217T520-113.63Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">Restart</span>
-          </div>
+        <div class="rest">
+          <span class="key">Host</span>
+          <span class="value" id="server-name" title="show / hide full name">ArchyLynx</span>
         </div>
-        <div class="cat-item disabled" title="no update needed">
-          <div class="cat-item-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#e8eaed"
-            >
-              <path
-                d="M729.57-77.85 852.2-200.48l-30.63-30.39-70.09 70.09v-161.37h-43.59v161.37l-70.32-70.09-30.4 30.39 122.4 122.63ZM480-796.65 250.17-663.96 480-531.02l229.83-132.94L480-796.65ZM111.87-322.67v-314.66q0-24.87 12.05-45.5 12.06-20.63 33.45-33.06L434.5-875.22q11.2-5.71 22.13-9.07 10.94-3.36 23.37-3.36 12.43 0 23.84 3.39 11.4 3.39 21.66 9.04l277.13 159.33q21.39 12.43 33.45 33.06 12.05 20.63 12.05 45.5V-480h-91v-109.54L479.24-428.98 202.87-589.54v265.87l246.7 142.82v104.68l-292.2-167.94q-21.39-12.43-33.45-33.06-12.05-20.63-12.05-45.5ZM729.57 0q-83 0-141.5-58.5T529.57-200q0-83 58.5-141.5t141.5-58.5q83 0 141.5 58.5t58.5 141.5q0 83-58.5 141.5T729.57 0ZM480-488.37Z"
-              />
-            </svg>
-          </div>
-          <div class="rest">
-            <span class="key">Update</span>
-          </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M360-360v-240h240v240H360Zm80-80h80v-80h-80v80Zm-85.5 331.72v-83.59h-71.63q-37.78 0-64.39-26.61t-26.61-64.39v-71.63h-83.59v-83.67h83.59v-83.66h-83.59v-83.67h83.59v-71.63q0-37.78 26.61-64.39t64.39-26.61h71.63v-83.59h83.67v83.59h83.66v-83.59h83.67v83.59h71.63q37.78 0 64.39 26.61t26.61 64.39v71.63h83.59v83.67h-83.59v83.66h83.59v83.67h-83.59v71.63q0 37.78-26.61 64.39t-64.39 26.61H605.5v83.59h-83.67v-83.59h-83.66v83.59H354.5Zm322.63-174.59v-394.26H282.87v394.26h394.26ZM480-480Z" />
+          </svg>
+        </div>
+        <div class="rest">
+          <span class="key">CPU</span>
+          <span class="value" id="server-cpu">20.0</span>
+        </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M234.5-354.5h91v-251h-91v251Zm200 0h91v-251h-91v251Zm200 0h91v-251h-91v251Zm-471.63 71.63h634.26v-394.26H162.87v394.26Zm0 0v-394.26 394.26Zm31.63 182v-91h-31.63q-37.78 0-64.39-26.61t-26.61-64.39v-394.26q0-37.78 26.61-64.39t64.39-26.61h31.63v-91h91v91h149v-91h91v91h149v-91h91v91h31.63q37.78 0 64.39 26.61t26.61 64.39v394.26q0 37.78-26.61 64.39t-64.39 26.61H765.5v91h-91v-91h-149v91h-91v-91h-149v91h-91Z" />
+          </svg>
+        </div>
+        <div class="rest">
+          <span class="key">RAM</span>
+          <span class="value" id="server-ram">20.0</span>
+        </div>
+      </div>
+      <div class="cat-item">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M322.87-162.87h314.26V-280q0-65.04-46.04-111.09-46.05-46.04-111.09-46.04t-111.09 46.04Q322.87-345.04 322.87-280v117.13Zm-171 91v-91h80V-280q0-60.04 27.18-113.3 27.19-53.27 76.04-86.7-48.85-33.43-76.04-86.7-27.18-53.26-27.18-113.3v-117.13h-80v-91h656.26v91h-80V-680q0 60.04-27.06 113.3Q674-513.43 624.91-480q49.09 33.43 76.16 86.7 27.06 53.26 27.06 113.3v117.13h80v91H151.87Z" />
+          </svg>
+        </div>
+        <div class="rest">
+          <span class="key">Uptime</span>
+          <span class="value" id="server-uptime">20:20:20</span>
         </div>
       </div>
     </div>
-    <div id="server-files"></div>
-    <script>
-      let ip = "http://192.168.68.104:4040"; // change if you want consoler
-      let quality = 0.7; // 70%
-      function getData(endpoint) {
-        return fetch(`${ip}/${endpoint}`)
-          .then((res) => res.text())
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-
-      let uiSidebarToggle = document.getElementById("sidebar-toggle");
-      const uiSidebar = document.getElementById("sidebar");
-      const uiServerFiles = document.getElementById("server-files");
-      let tmpSidebarHTML;
-      let sidebarState = 1; // 0 off, 1 on
-
-      uiSidebarToggle.addEventListener("click", () => {
-        if (sidebarState == 1) {
-          tmpSidebarHTML = sidebar.innerHTML;
-          sidebarState = 0;
-          (async () => {
-            sidebar.innerHTML = `
-        <div class="block-small">
-          <span class="icon icon-button">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm540-453h100v-107H700v107Zm0 186h100v-106H700v106ZM160-240h460v-480H160v480Zm540 0h100v-107H700v107Z" id="sidebar-toggle" ></svg>
-          </span>
+    <div class="cat">
+      <div class="title ffc">actions</div>
+      <div class="cat-item pps">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M480-71.87q-84.91 0-159.34-32.12-74.44-32.12-129.5-87.17-55.05-55.06-87.17-129.5Q71.87-395.09 71.87-480q0-85.75 31.98-159.77 31.98-74.01 87.17-129.21l64.13 63.89q-43.52 43.52-67.9 101.09-24.38 57.56-24.38 124.05 0 132.99 92.04 225.04 92.05 92.04 225.09 92.04 133.04 0 225.09-92.04 92.04-92.05 92.04-225.04 0-66.49-24.26-124.05-24.26-57.57-67.78-101.09l63.89-63.89q55.19 55.2 87.17 129.21 31.98 74.02 31.98 159.77 0 84.91-32.12 159.34-32.12 74.44-87.17 129.5-55.06 55.05-129.5 87.17Q564.91-71.87 480-71.87ZM434.5-434.5v-453.63h91v453.63h-91Z" />
+          </svg>
         </div>
-        <span class="block-small">HS ${await getData("version")}</span>
-        `;
-          })();
-        } else {
-          uiSidebarToggle = document.getElementById("sidebar-toggle");
-          sidebar.innerHTML = tmpSidebarHTML;
-          sidebarState = 1;
-        }
-      });
+        <div class="rest">
+          <span class="key">Shutdown</span>
+        </div>
+      </div>
+      <div class="cat-item pps">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M440-113.63q-124.11-15.48-206.12-108.01t-82.01-217.88q0-66.72 26-127.94 26-61.21 74-107.65l64.89 64.65q-36.33 33.53-55.11 77.45t-18.78 93.49q0 87.04 55.28 153.47 55.28 66.42 141.85 81.18v91.24Zm80 0v-91.24q85.8-15.52 141.47-81.68 55.66-66.17 55.66-152.97 0-97.37-67.49-166.18-67.49-68.8-164.62-70.71h-3.95l45.43 45.43-58.63 58.63-151.24-151.24 151.24-151.48 58.63 58.63-48.78 48.79h4.19q136.63 0 231.43 95.63 94.79 95.63 94.79 232.5 0 124.35-82.01 217T520-113.63Z" />
+          </svg>
+        </div>
+        <div class="rest">
+          <span class="key">Restart</span>
+        </div>
+      </div>
+      <div class="cat-item disabled pps" title="no update needed">
+        <div class="cat-item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M729.57-77.85 852.2-200.48l-30.63-30.39-70.09 70.09v-161.37h-43.59v161.37l-70.32-70.09-30.4 30.39 122.4 122.63ZM480-796.65 250.17-663.96 480-531.02l229.83-132.94L480-796.65ZM111.87-322.67v-314.66q0-24.87 12.05-45.5 12.06-20.63 33.45-33.06L434.5-875.22q11.2-5.71 22.13-9.07 10.94-3.36 23.37-3.36 12.43 0 23.84 3.39 11.4 3.39 21.66 9.04l277.13 159.33q21.39 12.43 33.45 33.06 12.05 20.63 12.05 45.5V-480h-91v-109.54L479.24-428.98 202.87-589.54v265.87l246.7 142.82v104.68l-292.2-167.94q-21.39-12.43-33.45-33.06-12.05-20.63-12.05-45.5ZM729.57 0q-83 0-141.5-58.5T529.57-200q0-83 58.5-141.5t141.5-58.5q83 0 141.5 58.5t58.5 141.5q0 83-58.5 141.5T729.57 0ZM480-488.37Z" />
+          </svg>
+        </div>
+        <div class="rest">
+          <span class="key">Update</span>
+        </div>
+      </div>
 
-      function formatSeconds(seconds) {
-        var hours = Math.floor(seconds / 3600);
-        var minutes = Math.floor((seconds % 3600) / 60);
-        var remainingSeconds = seconds % 60;
-        hours = String(hours).padStart(2, "0");
-        minutes = String(minutes).padStart(2, "0");
-        remainingSeconds = String(remainingSeconds).padStart(2, "0");
-        return hours + ":" + minutes + ":" + Math.floor(remainingSeconds);
-      }
-      function formatNumber(num) {
-        // Split the number into its integer and decimal parts
-        let [integerPart, decimalPart] = num.toString().split(".");
+    </div>
+    <div class="cat">
 
-        // Pad the integer part with leading zeros if it's less than two digits
-        let formattedInteger = integerPart.padStart(2, "0");
-
-        // Ensure the decimal part is one digit
-        let formattedDecimal = decimalPart ? decimalPart[0] : "0";
-
-        // Combine and return the formatted number
-        return `${formattedInteger}.${formattedDecimal}`;
-      }
-      function cend(string, array = []) {
-        for (let arg of array) {
-          if (string.endsWith(arg)) {
-            return true;
+      <div class="title ffc">padding</div>
+      <div class="cat-item">
+        <div class="cat-item-icon" id="file-padding-plus">+</div>
+        <div class="rest rest-cent" id="file-padding">
+          0
+        </div>
+        <div class="cat-item-icon" id="file-padding-minus">-</div>
+      </div>
+    </div>
+    <div class="cat" id="server-databases">
+    </div>
+  </div>
+  <div id="server-files">
+  </div>
+  <script>
+    let ip = "http://127.0.0.1:4040/"; // change if you want consoler
+    let quality = 0.6; // 60%
+    let errorcount = 0;
+    function getData(endpoint) {
+      return fetch(`${ip}/${endpoint}`)
+        .then((res) => res.text())
+        .catch((error) => {
+          errorcount++;
+          if (errorcount > 10) {
+            console.log("toggling off server requests due to too many errors")
           }
+          console.error(error);
+        });
+    }
+
+    let uiSidebarToggle = document.getElementById("sidebar-toggle");
+    const uiSidebar = document.getElementById("sidebar");
+    const uiServerFiles = document.getElementById("server-files");
+    let tmpSidebarHTML;
+    const serverCPU = document.getElementById("server-cpu");
+    const serverRAM = document.getElementById("server-ram");
+    const serverName = document.getElementById("server-name");
+    const serverPing = document.getElementById("server-ping");
+    const serverIP = document.getElementById("server-ip");
+    const serverDatabase = document.getElementById("server-databases");
+    const serverUptime = document.getElementById("server-uptime");
+    let currentDatabaseIndex = -1;
+    let oldDatabaseIndex = 0;
+    let chops = 1;
+
+    uiSidebarToggle.addEventListener("click", () => {
+      uiSidebar.classList.toggle("sidebar-hide");
+    });
+
+    function formatSeconds(seconds) {
+      var hours = Math.floor(seconds / 3600);
+      var minutes = Math.floor((seconds % 3600) / 60);
+      var remainingSeconds = seconds % 60;
+      hours = String(hours).padStart(2, "0");
+      minutes = String(minutes).padStart(2, "0");
+      remainingSeconds = String(remainingSeconds).padStart(2, "0");
+      return hours + ":" + minutes + ":" + Math.floor(remainingSeconds);
+    }
+    function formatNumber(num) {
+      // Split the number into its integer and decimal parts
+      let [integerPart, decimalPart] = num.toString().split(".");
+
+      // Pad the integer part with leading zeros if it's less than two digits
+      let formattedInteger = integerPart.padStart(2, "0");
+
+      // Ensure the decimal part is one digit
+      let formattedDecimal = decimalPart ? decimalPart[0] : "0";
+
+      // Combine and return the formatted number
+      return `${formattedInteger}.${formattedDecimal}`;
+    }
+    function cend(string, array = []) {
+      for (let arg of array) {
+        if (string.endsWith(arg)) {
+          return true;
         }
-        return false;
       }
-      const observer = new IntersectionObserver(
-        (entries, observer) => {
-          entries.forEach((entry) => {
-            const newEle = entry.target;
-            const originalSrc = newEle.dataset.src;
-            if (entry.isIntersecting) {
-              // When the element is on-screen, re-add it and set the src
-              if (!newEle.isConnected) {
-                uiServerFiles.append(newEle); // Re-add element if it was removed
-              }
-              if (newEle.tagName === "IMG") {
-                resizeImage(originalSrc, newEle); // Resize the image
-              } else {
-                newEle.src = originalSrc; // Load the actual src for videos
-              }
+      return false;
+    }
+    const observer = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          const newEle = entry.target;
+          const originalSrc = newEle.dataset.src;
+          if (entry.isIntersecting) {
+            // When the element is on-screen, re-add it and set the src
+            if (!newEle.isConnected) {
+              uiServerFiles.append(newEle); // Re-add element if it was removed
             }
-          });
-        },
-        { root: null, threshold: 0.1 }
-      ); // Trigger when 10% of the element is visible
-
-      // Function to resize the image based on screen size
-      async function resizeImage(originalSrc, imgElement) {
-        const img = new Image();
-        img.src = originalSrc;
-        await img.decode(); // Wait for the image to Load
-
-        // Get screen dimensions
-        const maxWidth = window.innerWidth; // Limit width to screen size
-        const aspectRatio = img.height / img.width; // Maintain aspect ratio
-
-        // Calculate new dimensions
-        let newWidth = maxWidth;
-        let newHeight = newWidth * aspectRatio;
-
-        // Create a canvas to resize the image
-        const canvas = document.createElement("canvas");
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, newWidth, newHeight); // Draw the resized image
-
-        // Set the src of the img element to the data URL of the canvas
-        imgElement.src = canvas.toDataURL("image/jpeg", quality); // Set quality (0.7 for 70%)
-      }
-      (async () => {
-        let files = JSON.parse(await getData("files"));
-        for (let file of files) {
-          let newEle;
-          if (cend(file, ["png", "webp", "jpg", "jpeg", "gif"])) {
-            newEle = document.createElement("img");
-          } else if (cend(file, ["mp4", "webm", "avi"])) {
-            newEle = document.createElement("video");
-            newEle.controls = "controls";
+            if (newEle.tagName === "IMG") {
+              resizeImage(originalSrc, newEle); // Resize the image
+            } else {
+              newEle.src = originalSrc; // Load the actual src for videos
+            }
           }
-          newEle.addEventListener("click", () => {
-            location.href = `${ip}${file}`;
-          });
-          newEle.dataset.src = `${ip}${file}`;
-          uiServerFiles.append(newEle);
-          observer.observe(newEle);
+
+        });
+      },
+      { root: null, threshold: 0.1 }
+    ); // Trigger when 10% of the element is visible
+    serverName.addEventListener("click", () => {
+      if (chops == 1) {
+        chops = 0;
+      } else if (chops == 0) {
+        chops = 1;
+      }
+    })
+    // Function to resize the image based on screen size
+    async function resizeImage(originalSrc, imgElement) {
+      const img = new Image();
+      img.src = originalSrc;
+      console.log(img.height * img.width)
+      if (img.height * img.width > 10000000) {
+        // img to large
+        console.error("image too big: " + originalSrc);
+        img.remove();
+        return
+
+      }
+      await img.decode(); // Wait for the image to Load
+
+      // Get screen dimensions
+      const maxWidth = window.innerWidth; // Limit width to screen size
+      const aspectRatio = img.height / img.width; // Maintain aspect ratio
+
+      // Calculate new dimensions
+      let newWidth = maxWidth;
+      let newHeight = newWidth * aspectRatio;
+
+      // Create a canvas to resize the image
+      const canvas = document.createElement("canvas");
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, newWidth, newHeight); // Draw the resized image
+
+      // Set the src of the img element to the data URL of the canvas
+      imgElement.src = canvas.toDataURL("image/jpeg", quality); // Set quality (0.7 for 70%)
+    }
+    (async () => {
+      let files = JSON.parse(await getData("files"));
+      for (let file of files) {
+        let newEle;
+        if (cend(file, ["png", "webp", "jpg", "jpeg", "gif", "pdf"])) {
+          newEle = document.createElement("img");
+        } else if (cend(file, ["mp4", "webm", "avi"])) {
+          newEle = document.createElement("video");
+          newEle.controls = "controls";
+        } else {
+          continue
         }
-      })();
-      setInterval(() => {
-        if (sidebarState == 1) {
-          const serverCPU = document.getElementById("server-cpu");
-          const serverRAM = document.getElementById("server-ram");
-          const serverName = document.getElementById("server-name");
-          const serverPing = document.getElementById("server-ping");
-          const serverIP = document.getElementById("server-ip");
-          const serverUptime = document.getElementById("server-uptime");
-          (async () => {
-            let packet = JSON.parse(await getData("info_packet"));
-            // set the prams
-            serverCPU.innerText = formatNumber(packet["cpu"]);
-            serverRAM.innerText = formatNumber(packet["ram"]);
+        newEle.addEventListener("click", () => {
+          location.href = `${ip}${file}`;
+        });
+        newEle.dataset.src = `${ip}${file}`;
+        uiServerFiles.append(newEle);
+        observer.observe(newEle);
+      }
+    })();
+    function truncateString(str, maxLength) {
+      if (str.length > maxLength) {
+        return str.slice(0, maxLength - 3) + '...';
+      }
+      return str;
+    }
+    async function getDataBase() {
+      let packet = JSON.parse(await getData("database"))
+      serverDatabase.innerHTML = `<div class="title ffc" id="server-databases">Databases</div>`
+      for (let i = 0; i < packet.length; i++) {
+        let curobj = packet[i]
+        const newDatabase = document.createElement("div");
+        newDatabase.classList.add("cat-item");
+        newDatabase.classList.add("dropdown-active");
+        newDatabase.dataset.src = curobj["path"];
+        newDatabase.dataset.index = i;
+
+        if (currentDatabaseIndex == i) {
+          newDatabase.classList.add("active-select");
+          console.log("re-selected: " + i)
+        }
+        newDatabase.innerHTML = `
+          <div class="cat-item-drop" title="options"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+              </svg></div>
+              <div class="cat-item-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                <path
+                  d="M300-729.57q-25 0-42.5 17.5t-17.5 42.5q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5t-42.5-17.5Zm0 416.27q-25 0-42.5 17.5T240-253.3q0 25 17.5 42.5t42.5 17.5q25 0 42.5-17.5t17.5-42.5q0-25-17.5-42.5T300-313.3ZM157.37-857.7h645.26q19.34 0 32.42 13.3 13.08 13.29 13.08 32.68v283.35q0 19.95-13.08 33.44-13.08 13.5-32.42 13.5H157.37q-19.34 0-32.42-13.5-13.08-13.49-13.08-33.44v-283.35q0-19.39 13.08-32.68 13.08-13.3 32.42-13.3Zm45.5 91v194.26h554.26V-766.7H202.87Zm-45.5 325.27h645.26q19.34 0 32.42 13.49 13.08 13.49 13.08 33.44v283.35q0 19.44-13.08 32.59-13.08 13.15-32.42 13.15H157.37q-19.34 0-32.42-13.15-13.08-13.15-13.08-32.59V-394.5q0-19.95 13.08-33.44 13.08-13.49 32.42-13.49Zm45.5 91v194.02h554.26v-194.02H202.87Zm0-416.27v194.26-194.26Zm0 416.27v194.02-194.02Z" />
+              </svg>
+            </div>
+            <div class="rest">
+              <span class="key">${curobj["name"]}</span>
+              <span class="value">1${curobj["size"]}</span>
+            </div>
+          `;
+        newDatabase.getElementsByClassName("rest")[0].addEventListener("click", () => {
+          console.log(newDatabase.dataset.index);
+
+          currentDatabaseIndex = newDatabase.dataset.index;
+          Array.from(serverDatabase.querySelectorAll("*")).forEach(element => {
+
+            element.classList.remove("active-select");
+          })
+          newDatabase.classList.add("active-select");
+          if (oldDatabaseIndex != currentDatabaseIndex && currentDatabaseIndex >= 0) {
+            uiServerFiles.innerHTML = "";
+            (async () => {
+              let files = JSON.parse(await getData("query_database_files/" + currentDatabaseIndex));
+              for (let file of files) {
+                let newEle;
+                if (cend(file, ["png", "webp", "jpg", "jpeg", "gif", "pdf"])) {
+                  newEle = document.createElement("img");
+                } else if (cend(file, ["mp4", "webm", "avi"])) {
+                  newEle = document.createElement("video");
+                  newEle.controls = "controls";
+                } else {
+                  continue
+                }
+                newEle.addEventListener("click", () => {
+                  location.href = `${ip}${file}`;
+                });
+                newEle.dataset.src = `${ip}${file}`;
+                uiServerFiles.append(newEle);
+                observer.observe(newEle);
+              }
+            })(); oldDatabaseIndex = currentDatabaseIndex
+          }
+
+        });
+        serverDatabase.append(newDatabase);
+      }
+    }
+    getDataBase();
+    setInterval(() => {
+      getDataBase();
+    }, 10000)
+    setInterval(() => {
+      if (!uiSidebar.classList.contains("sidebar-hide") && errorcount < 10) {
+        (async () => {
+          let packet = JSON.parse(await getData("info_packet"));
+          // set the prams
+          serverCPU.innerText = formatNumber(packet["cpu"]);
+          serverRAM.innerText = formatNumber(packet["ram"]);
+          if (chops == 1) {
+            serverName.innerText = truncateString(packet["hostname"], 13);
+          } else {
             serverName.innerText = packet["hostname"];
-            serverPing.innerText = formatNumber(packet["ping"]);
-            serverIP.innerText = packet["ip"];
-            serverUptime.innerText = formatSeconds(packet["uptime"]);
-          })();
-        }
-      }, 1000);
-      // time to render the actual files
-    </script>
-  </body>
+          }
+          serverPing.innerText = formatNumber(packet["ping"]);
+          serverIP.innerText = packet["ip"];
+          serverUptime.innerText = formatSeconds(packet["uptime"]);
+        })();
+      }
+    }, 1000);
+    // time to render the actual files
+  </script>
+  <script>
+    const uiPadding = document.getElementById("file-padding");
+    const uiPaddingPlus = document.getElementById("file-padding-plus");
+    const uiPaddingMinus = document.getElementById("file-padding-minus");
+    let paddingvalue = 0;
+    function addPaddingValue() {
+      uiPadding.innerText = paddingvalue;
+      uiServerFiles.style.padding = `0px ${paddingvalue}vw `
+    }
+    uiPaddingPlus.addEventListener("click", () => {
+      paddingvalue += 5;
+      addPaddingValue()
+    })
+    uiPaddingMinus.addEventListener("click", () => {
+      paddingvalue -= 5;
+      addPaddingValue()
+    })
+  </script>
+</body>
+
 </html>
