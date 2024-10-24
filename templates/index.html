@@ -586,6 +586,15 @@
     setInterval(() => {
       getDataBase();
     }, 10000)
+    setInterval(()=>{
+      (async ()=>{
+        if(Number(await getData("version"))!=Number(await getData("latest_version_update_check"))){
+          console.log("update please");
+        } else { 
+          console.log("no update needed");
+        }
+      })()
+    },1000)
     setInterval(() => {
       if (!uiSidebar.classList.contains("sidebar-hide") && errorcount < 10) {
         (async () => {
@@ -625,5 +634,4 @@
     })
   </script>
 </body>
-
 </html>

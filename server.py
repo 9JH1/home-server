@@ -24,7 +24,7 @@ def fetch_first_line():
         first_line = response.text.splitlines()[0]  # Get the first line
 
 
-        return first_line.split("=")[1]
+        return str(first_line.split("=")[1]).replace('"',"")
     except requests.RequestException as e:
         print(f"Error fetching the URL: {e}")
         return None
@@ -143,5 +143,15 @@ def upload_file():
 @app.route("/version")
 def version_g(): 
     return ver
+
+@app.route("/restart")
+def restart():
+    subprocess.run("shutdown -r 0", shell=True, check=True)
+    return "Restarting"
+
+@app.route("/shutdown")
+def shutdown():
+    subprocess.run("shutdown -h 0", shell=True, check=True)
+    return "Shutting down!"
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=4040)
