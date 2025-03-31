@@ -9,26 +9,9 @@ import math
 import psutil
 import shutil
 import requests
-files_route = "/home/_3hy/Pictures/" # full path
-#files_route = "/home/_3hy/.steam/steam/steamapps/compatdata/244210/pfx/drive_c/users/steamuser/Documents/Assetto Corsa/screens"
-#files_route = "/home/_3hy/Downloader/downloads/General Searchs/"
 app = flask.Flask(__name__)
 CORS = flask_cors.CORS(app)
-
-@app.route("/latest_version_update_check")
-def fetch_first_line():
-    url = "https://raw.githubusercontent.com/9jh1/home-server/refs/heads/main/server.py"
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an error for bad responses
-        first_line = response.text.splitlines()[0]  # Get the first line
-
-
-        return str(first_line.split("=")[1]).replace('"',"")
-    except requests.RequestException as e:
-        print(f"Error fetching the URL: {e}")
-        return None
-
+files_route="/drive/rule34"
 # ROUTES
 @app.route("/") 
 def render_home(): 
@@ -37,10 +20,18 @@ def render_home():
 
 @app.route("/files")
 def list_files():
+    
     result = []
     for root, dirs, files in os.walk(files_route):
         for file in files:
             result.append(os.path.join(root, file).replace(files_route,""))
+    """
+    files = os.listdir(files_route)
+    print(files)
+    
+        # Filter files that start with the specified prefix
+    result = files#[f for f in files if f.startswith("file.") and os.path.isfile(os.path.join(files_route, f))]
+    """
     return flask.jsonify(result)  # Use jsonify to return a list of full file paths
 
 @app.route('/<path:filename>')
@@ -130,16 +121,31 @@ def info_packet():
         "ping": get_ping()
     })
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload_end', methods=['POST'])
 def upload_file():
-    if 'file' not in flask.request.files:
-        return 'No file part'
-    file = flask.request.files['file']
-    if file.filename == '':
-        return 'No selected file'
-    # Save the file to the uploads directory
-    file.save(files_route + '/' + file.filename)
-    return 'File uploaded successfully'
+    if 'files' not in flask.request.files:
+        return 'No files part'
+    
+    files = flask.request.files.getlist('files')  # Get list of files from the form
+    
+    if not files:
+        return 'No selected files'
+    
+    uploaded_files = []
+    for file in files:
+        if file.filename == '':
+            return 'One of the files is missing a name'
+        
+        # Save each file to the uploads directory
+        file_path = os.path.join(files_route, file.filename)
+        file.save(file_path)
+        uploaded_files.append(file.filename)
+
+    return f"Files uploaded successfully: {', '.join(uploaded_files)}"
+
+@app.route('/upload')
+def render_upload():
+    return flask.render_template("upload.html")
 @app.route("/version")
 def version_g(): 
     return ver
